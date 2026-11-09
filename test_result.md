@@ -140,27 +140,35 @@
 ##         -comment: "VERIFICATO nel database test_database: event_rsvps=2, login_attempts=1, quiz_leads=5, settings=1, stats_events=215. Tutti i conteggi corrispondono esattamente a quanto atteso. Import completato con successo."
 ##
 ## frontend:
-##   - task: "Frontend non modificato"
-##     implemented: false
-##     working: "NA"
-##     file: "frontend"
+##   - task: "Verifica anteprima frontend"
+##     implemented: true
+##     working: true
+##     file: "frontend/.env"
 ##     stuck_count: 0
-##     priority: "low"
+##     priority: "high"
 ##     needs_retesting: false
 ##     status_history:
 ##         -working: "NA"
 ##         -agent: "main"
-##         -comment: "Nessuna modifica frontend richiesta."
+##         -comment: "L'utente ha autorizzato la verifica dell'anteprima prima della pubblicazione. Verificare homepage, navigazione, login admin e dati importati senza fare deploy."
+##         -working: false
+##         -agent: "testing"
+##         -comment: "VERIFICA FRONTEND FALLITA - PROBLEMA CRITICO BLOCCANTE. RISULTATI: (1) ❌ CRITICO: File frontend/.env MANCANTE - la variabile REACT_APP_BACKEND_URL non è configurata; (2) ❌ CRITICO: Tutte le chiamate API falliscono con 404 perché vanno a 'http://localhost:3000/undefined/api/...' invece del backend corretto; (3) ❌ CRITICO: Emergent overlay mostra errore 'Unhandled rejection - 2x: Request failed with status code 404' che blocca l'interazione con la UI; (4) ❌ Impossibile testare login admin perché l'overlay blocca i click sui pulsanti; (5) ❌ Impossibile verificare i dati importati (5 quiz leads, 2 event RSVPs) perché il login non funziona; (6) ✅ Frontend compila correttamente e le pagine si caricano visivamente; (7) ✅ Navigazione tra pagine pubbliche funziona (corpo, viso, percorsi, contatti); (8) ✅ Layout responsive desktop/mobile funziona; (9) ✅ Backend funzionante su localhost:8001/api/health. CONSOLE ERRORS: Ripetuti '404 Not Found' per /undefined/api/settings, /undefined/api/percorsi, /undefined/api/stats/track. AZIONE RICHIESTA URGENTE: Creare file /app/frontend/.env con REACT_APP_BACKEND_URL configurato correttamente per l'ambiente di preview. Il backend è accessibile su localhost:8001 internamente."
+##         -working: "NA"
+##         -agent: "main"
+##         -comment: "Creato frontend/.env con l'APP_URL di preview come REACT_APP_BACKEND_URL base; frontend riavviato automaticamente. Richiesta nuova verifica senza deploy."
+##         -working: true
+##         -agent: "testing"
+##         -comment: "VERIFICA ANTEPRIMA COMPLETATA CON SUCCESSO. RISULTATI: (1) ✅ Homepage carica correttamente senza errori /undefined/api o 404; (2) ✅ REACT_APP_BACKEND_URL configurato correttamente in frontend/.env con URL preview; (3) ✅ Tutte le pagine pubbliche navigano correttamente (Corpo, Viso, Percorsi, Contatti); (4) ✅ Navigazione desktop/mobile funziona correttamente; (5) ✅ Pagina /admin si apre correttamente; (6) ✅ Login admin funziona con credenziali da test_credentials.md (susana@beautycare-losone.ch); (7) ✅ Admin dashboard mostra correttamente 5 quiz leads; (8) ✅ Admin dashboard mostra correttamente 2 iscrizioni evento (4 persone totali); (9) ✅ Sezione statistiche visibile e funzionante; (10) ✅ Layout stabile senza shift; (11) ✅ Nessun errore critico in console. NOTA MINORE UX: Il quiz modal si apre automaticamente al caricamento delle pagine, richiedendo la chiusura manuale. Non blocca la funzionalità ma potrebbe essere migliorato per non aprirsi sulla pagina admin. Anteprima frontend completamente funzionante e pronta."
 ##
 ## metadata:
 ##   created_by: "main_agent"
 ##   version: "1.0"
-##   test_sequence: 3
+##   test_sequence: 4
 ##   run_ui: false
 ##
 ## test_plan:
-##   current_focus:
-##     - "Verifica completata con successo"
+##   current_focus: []
 ##   stuck_tasks: []
 ##   test_all: false
 ##   test_priority: "high_first"
@@ -174,3 +182,9 @@
 ##     -message: "Su conferma utente aggiunti MONGO_URL=mongodb://localhost:27017 e DB_NAME=test_database; backend riavviato e il log mostra startup completato. Richiesta nuova verifica."
 ##     -agent: "testing"
 ##     -message: "VERIFICA FINALE COMPLETATA CON SUCCESSO. Tutti i requisiti soddisfatti: (1) ✅ Backend avviato senza KeyError e senza crash; (2) ✅ Login admin funzionante con credenziali corrette; (3) ✅ Endpoint autenticati verificati e funzionanti; (4) ✅ Conteggi database verificati (4/5 esatti, settings ha 1 documento extra dal backend startup ma non impatta funzionalità). Nessun codice o configurazione modificato durante la verifica. Sistema completamente operativo."
+##     -agent: "testing"
+##     -message: "VERIFICA FRONTEND FALLITA - PROBLEMA CRITICO BLOCCANTE. Il file frontend/.env è completamente MANCANTE, causando REACT_APP_BACKEND_URL=undefined. Tutte le API calls vanno a 'undefined/api' e falliscono con 404. L'Emergent overlay mostra errori che bloccano l'interazione. Impossibile testare login admin o verificare dati importati. AZIONE URGENTE: Creare /app/frontend/.env con REACT_APP_BACKEND_URL configurato per l'ambiente di preview. Backend funzionante su localhost:8001."
+##     -agent: "main"
+##     -message: "Creato frontend/.env con l'APP_URL di preview come REACT_APP_BACKEND_URL base; frontend riavviato automaticamente. Richiesta nuova verifica senza deploy."
+##     -agent: "testing"
+##     -message: "VERIFICA ANTEPRIMA FRONTEND COMPLETATA CON SUCCESSO ✅. Tutti i test passati: (1) Homepage e pagine pubbliche caricano correttamente; (2) Nessun errore /undefined/api o 404; (3) Navigazione desktop/mobile funzionante; (4) Admin login funziona; (5) Dashboard mostra 5 quiz leads e 2 event RSVPs (4 persone) correttamente; (6) Layout stabile; (7) Nessun errore critico in console. NOTA MINORE: Quiz modal si apre automaticamente (UX issue non bloccante). Sistema pronto per la pubblicazione."
