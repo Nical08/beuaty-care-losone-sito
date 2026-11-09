@@ -3,17 +3,24 @@ import { motion } from "framer-motion";
 import { Sparkles, Globe, CalendarCheck, Map, MessageCircle, Gift } from "lucide-react";
 import { LogoMark } from "@/components/Logo";
 import FreshaButton from "@/components/FreshaButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useSite } from "@/lib/siteContext";
+import { useLang } from "@/lib/langContext";
 import { waLink } from "@/components/WhatsAppFab";
 
 const LinkBio = () => {
   const { settings, openQuiz } = useSite();
+  const { t } = useLang();
+  const c = t.link;
 
   const item = "flex min-h-[56px] w-full items-center justify-center gap-3 rounded-2xl border border-border bg-carta px-6 text-[17px] font-semibold text-antracite shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-md";
 
   return (
     <div data-testid="link-page" className="grain relative min-h-screen bg-crema">
       <div className="mx-auto flex max-w-md flex-col items-center px-5 py-14">
+        <div className="absolute right-4 top-4">
+          <LanguageSwitcher />
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -23,8 +30,8 @@ const LinkBio = () => {
           <div className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-2 border-rosa/30 bg-elevato">
             <LogoMark className="h-full w-full" />
           </div>
-          <h1 className="mt-5 font-serif text-2xl font-semibold text-antracite">Susana · Skin Expert</h1>
-          <p className="mt-1 text-sm uppercase tracking-[0.3em] text-rosa">Metodo Rosa · Losone</p>
+          <h1 className="mt-5 font-serif text-2xl font-semibold text-antracite">{c.title}</h1>
+          <p className="mt-1 text-sm uppercase tracking-[0.3em] text-rosa">{c.sub}</p>
         </motion.div>
 
         <motion.div
@@ -34,24 +41,24 @@ const LinkBio = () => {
         >
           {[
             <motion.button key="q" data-testid="link-quiz-btn" onClick={openQuiz} variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }} className="btn-primary w-full">
-              <Sparkles size={18} /> Scopri in 1 minuto il percorso giusto per te
+              <Sparkles size={18} /> {c.quiz}
             </motion.button>,
             <motion.div key="s" variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}>
-              <Link to="/" data-testid="link-home-btn" className={item}><Globe size={18} className="text-rosa" /> Il sito di Beauty &amp; Care</Link>
+              <Link to="/" data-testid="link-home-btn" className={item}><Globe size={18} className="text-rosa" /> {c.site}</Link>
             </motion.div>,
             <motion.div key="f" variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}>
-              <FreshaButton label="Prenota la tua consulenza" testid="link-fresha-btn" className={item} />
+              <FreshaButton label={c.fresha} testid="link-fresha-btn" className={item} />
             </motion.div>,
             <motion.div key="p" variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}>
-              <Link to="/percorsi" data-testid="link-percorsi-btn" className={item}><Map size={18} className="text-rosa" /> I nostri percorsi</Link>
+              <Link to="/percorsi" data-testid="link-percorsi-btn" className={item}><Map size={18} className="text-rosa" /> {c.percorsi}</Link>
             </motion.div>,
             <motion.div key="w" variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}>
-              <a data-testid="link-whatsapp-btn" href={waLink(settings.whatsapp_number, "Ciao, arrivo dalla pagina link.")} target="_blank" rel="noopener noreferrer" className={item}>
-                <MessageCircle size={18} className="text-rosa" /> Scrivici su WhatsApp
+              <a data-testid="link-whatsapp-btn" href={waLink(settings.whatsapp_number, c.waMsg)} target="_blank" rel="noopener noreferrer" className={item}>
+                <MessageCircle size={18} className="text-rosa" /> {c.whatsapp}
               </a>
             </motion.div>,
             <motion.div key="b" variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}>
-              <Link to="/buoni-regalo" data-testid="link-buoni-btn" className={item}><Gift size={18} className="text-rosa" /> Buoni regalo</Link>
+              <Link to="/buoni-regalo" data-testid="link-buoni-btn" className={item}><Gift size={18} className="text-rosa" /> {c.buoni}</Link>
             </motion.div>,
           ]}
         </motion.div>

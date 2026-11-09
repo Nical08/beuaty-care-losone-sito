@@ -1,10 +1,12 @@
 import { useSite } from "@/lib/siteContext";
+import { useLang } from "@/lib/langContext";
 import { FRESHA_URL } from "@/lib/content";
 import { trackEvent } from "@/lib/api";
 
 // Pulsante Fresha: link al listino prenotazioni del centro (sempre attivo).
-const FreshaButton = ({ label = "Prenota la consulenza gratuita", kind = "consulenza", className = "btn-secondary", testid = "fresha-btn" }) => {
+const FreshaButton = ({ label, kind = "consulenza", className = "btn-secondary", testid = "fresha-btn" }) => {
   const { settings } = useSite();
+  const { t } = useLang();
   const url = (kind === "consulenza"
     ? settings.fresha_consulenza_url || settings.fresha_url
     : kind === "buoni"
@@ -13,7 +15,7 @@ const FreshaButton = ({ label = "Prenota la consulenza gratuita", kind = "consul
 
   return (
     <a data-testid={testid} href={url} target="_blank" rel="noopener noreferrer" className={className} onClick={() => trackEvent("fresha_click")}>
-      {label}
+      {label || t.common.bookConsultation}
     </a>
   );
 };

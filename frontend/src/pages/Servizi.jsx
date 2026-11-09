@@ -3,41 +3,45 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import FreshaButton from "@/components/FreshaButton";
-import { LISTINO, FRESHA_URL } from "@/lib/content";
+import { FRESHA_URL } from "@/lib/content";
 import { trackEvent } from "@/lib/api";
 import { useSite } from "@/lib/siteContext";
-
-const Prezzo = ({ prezzo }) => {
-  if (prezzo == null) return null;
-  if (prezzo === "gratuita") return <span className="font-semibold text-[#4c5c48]">Gratuita</span>;
-  if (typeof prezzo === "string") return <span className="font-semibold text-antracite">da CHF {prezzo.replace("da ", "")}</span>;
-  return <span className="font-semibold text-antracite">CHF {prezzo}</span>;
-};
+import { useLang, fmt } from "@/lib/langContext";
 
 const Servizi = () => {
   const { percorsoByHandle } = useSite();
+  const { t } = useLang();
+  const c = t.servizi;
+  const listino = t.listino || [];
   const [searchParams] = useSearchParams();
   const [cerca, setCerca] = useState("");
   useEffect(() => {
     const q = searchParams.get("q");
     if (q) setCerca(q);
   }, [searchParams]);
-  const totale = LISTINO.reduce((n, f) => n + f.voci.length, 0);
+  const totale = listino.reduce((n, f) => n + f.voci.length, 0);
   const q = cerca.trim().toLowerCase();
-  const listinoFiltrato = LISTINO
+  const listinoFiltrato = listino
     .map((f) => ({ ...f, voci: f.voci.filter((v) => !q || v.nome.toLowerCase().includes(q) || f.famiglia.toLowerCase().includes(q)) }))
     .filter((f) => f.voci.length > 0);
   const risultati = listinoFiltrato.reduce((n, f) => n + f.voci.length, 0);
 
+  const Prezzo = ({ prezzo }) => {
+    if (prezzo == null) return null;
+    if (prezzo === "gratuita") return <span className="font-semibold text-[#4c5c48]">{t.common.free}</span>;
+    if (typeof prezzo === "string") return <span className="font-semibold text-antracite">{fmt(t.common.fromChf, { v: prezzo.replace("da ", "") })}</span>;
+    return <span className="font-semibold text-antracite">{fmt(t.common.chf, { v: prezzo })}</span>;
+  };
+
   return (
     <div data-testid="servizi-page" className="container-site py-16 lg:py-24">
       <Reveal>
-        <p className="eyebrow mb-3">Listino</p>
+        <p className="eyebrow mb-3">{c.eyebrow}</p>
         <h1 className="max-w-2xl font-serif text-4xl font-semibold leading-tight text-antracite sm:text-5xl">
-          Tutti i servizi del centro
+          {c.h1}
         </h1>
         <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
-          Il listino completo, con prezzi e durate come su Fresha. Ogni servizio si prenota online in un minuto.
+          {c.p}
         </p>
         <div className="relative mt-7 max-w-xl">
           <Search size={20} className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -46,13 +50,15 @@ const Servizi = () => {
             type="search"
             value={cerca}
             onChange={(e) => setCerca(e.target.value)}
-            placeholder="Cerca un trattamento… es. pressoterapia, laminazione, laser"
+            placeholder={c.searchPlaceholder}
             className="min-h-[56px] w-full rounded-full border border-input bg-carta pl-13 pr-5 text-[17px] text-antracite shadow-sm outline-none transition-colors focus:border-rosa"
             style={{ paddingLeft: "3.2rem" }}
           />
         </div>
         <p className="mt-3 text-sm text-muted-foreground">
-          {q ? `${risultati} risultat${risultati === 1 ? "o" : "i"} per “${cerca}”` : `${totale} servizi · prezzi aggiornati da Fresha`}
+          {q
+            ? fmt(risultati === 1 ? c.countOne : c.countMany, { n: risultati, q: cerca })
+            : fmt(c.countAll, { totale })}
         </p>
       </Reveal>
 
@@ -66,7 +72,7 @@ const Servizi = () => {
                   <h2 className="font-serif text-2xl font-semibold text-antracite">{fam.famiglia}</h2>
                   {percorso && (
                     <Link to={`/percorsi/${percorso.handle}`} data-testid={`servizi-percorso-${percorso.handle}`} className="text-[15px] font-semibold text-rosa hover:underline">
-                      Percorso collegato: {percorso.nome} →
+                      {fmt(c.linked, { nome: percorso.nome })}
                     </Link>
                   )}
                 </div>
@@ -90,7 +96,7 @@ const Servizi = () => {
                           className="btn-secondary !min-h-[44px] !px-5 !py-2 text-sm"
                           onClick={() => trackEvent("fresha_click")}
                         >
-                          Prenota su Fresha
+                          {t.common.bookFresha}
                         </a>
                       </div>
                     </div>
@@ -102,14 +108,14 @@ const Servizi = () => {
         })}
         {listinoFiltrato.length === 0 && (
           <p data-testid="servizi-no-results" className="rounded-3xl border border-border bg-carta p-10 text-center text-muted-foreground">
-            Nessun trattamento trovato per “{cerca}”. Prova con un'altra parola o scrivici: ti aiutiamo noi.
+            {fmt(c.noResults, { q: cerca })}
           </p>
         )}
       </div>
 
       <Reveal>
         <div className="mt-16 text-center">
-          <FreshaButton label="Prenota il tuo appuntamento su Fresha" testid="servizi-fresha-bottom" className="btn-primary" />
+          <FreshaButton label={c.bottomBtn} testid="servizi-fresha-bottom" className="btn-primary" />
         </div>
       </Reveal>
     </div>

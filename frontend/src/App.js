@@ -3,6 +3,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import { SiteProvider } from "@/lib/siteContext";
+import { LanguageProvider } from "@/lib/langContext";
 import { trackEvent } from "@/lib/api";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
@@ -42,37 +43,39 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <SiteProvider>
-        <ScrollManager />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/corpo" element={<Corpo />} />
-            <Route path="/viso" element={<Viso />} />
-            <Route path="/percorsi" element={<Percorsi />} />
-            <Route path="/percorsi/:handle" element={<PercorsoDetail />} />
-            <Route path="/susana" element={<Susana />} />
-            <Route path="/servizi" element={<Servizi />} />
-            <Route path="/buoni-regalo" element={<BuoniRegalo />} />
-            <Route path="/contatti" element={<Contatti />} />
-            <Route path="/risultato" element={<Risultato />} />
-            <Route path="/grazie" element={<Grazie />} />
-            <Route path="/prodotti" element={<ComingSoon titolo="Prodotti alla rosa damascena" testo="La linea di prodotti che Susana usa in cabina, presto disponibile anche online. Per ora la trovi in centro." />} />
-            <Route path="/formazione" element={<ComingSoon titolo="Formazione" testo="Le masterclass di Susana sono in preparazione. Torna a trovarci." />} />
-            <Route path="/open-day" element={<EventoNatale />} />
-            <Route path="/evento-natale" element={<EventoNatale />} />
-            <Route path="/faq" element={<Faq />} />
-            <Route path="/privacy" element={<Legale tipo="privacy" />} />
-            <Route path="/condizioni" element={<Legale tipo="condizioni" />} />
-            <Route path="/cookie" element={<Legale tipo="cookie" />} />
-            <Route path="/note-legali" element={<Legale tipo="note-legali" />} />
-            <Route path="/admin" element={<Admin />} />
-          </Route>
-          <Route path="/link" element={<LinkBio />} />
-        </Routes>
-      </SiteProvider>
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <SiteProvider>
+          <ScrollManager />
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/corpo" element={<Corpo />} />
+              <Route path="/viso" element={<Viso />} />
+              <Route path="/percorsi" element={<Percorsi />} />
+              <Route path="/percorsi/:handle" element={<PercorsoDetail />} />
+              <Route path="/susana" element={<Susana />} />
+              <Route path="/servizi" element={<Servizi />} />
+              <Route path="/buoni-regalo" element={<BuoniRegalo />} />
+              <Route path="/contatti" element={<Contatti />} />
+              <Route path="/risultato" element={<Risultato />} />
+              <Route path="/grazie" element={<Grazie />} />
+              <Route path="/prodotti" element={<ComingSoon kind="prodotti" />} />
+              <Route path="/formazione" element={<ComingSoon kind="formazione" />} />
+              <Route path="/open-day" element={<EventoNatale />} />
+              <Route path="/evento-natale" element={<EventoNatale />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/privacy" element={<Legale tipo="privacy" />} />
+              <Route path="/condizioni" element={<Legale tipo="condizioni" />} />
+              <Route path="/cookie" element={<Legale tipo="cookie" />} />
+              <Route path="/note-legali" element={<Legale tipo="note-legali" />} />
+              <Route path="/admin" element={<Admin />} />
+            </Route>
+            <Route path="/link" element={<LinkBio />} />
+          </Routes>
+        </SiteProvider>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }
 

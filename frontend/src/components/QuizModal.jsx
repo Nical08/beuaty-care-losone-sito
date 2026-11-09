@@ -3,11 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, X, Sparkles } from "lucide-react";
 import { useSite } from "@/lib/siteContext";
+import { useLang } from "@/lib/langContext";
 import { postQuizLead, trackEvent } from "@/lib/api";
-import {
-  D1_OPTIONS, D2_OPTIONS, D3_OPTIONS, D4_OPTIONS,
-  computeResult, buildWhatsAppMessage,
-} from "@/lib/quizLogic";
+import { computeResult, buildWhatsAppMessage } from "@/lib/quizLogic";
 
 const slide = {
   initial: { opacity: 0, x: 40 },
@@ -17,6 +15,8 @@ const slide = {
 
 const QuizModal = () => {
   const { quizOpen, closeQuiz, percorsoByHandle } = useSite();
+  const { t } = useLang();
+  const q = t.quiz;
   const navigate = useNavigate();
 
   const [step, setStep] = useState("intro");
@@ -73,16 +73,16 @@ const QuizModal = () => {
 
   const submit = async () => {
     if (!form.nome.trim() || !form.telefono.trim()) {
-      setError("Inserisci nome e numero di telefono.");
+      setError(q.errRequired);
       return;
     }
     if (!form.consenso) {
-      setError("Per continuare serve il consenso al contatto su WhatsApp.");
+      setError(q.errConsent);
       return;
     }
     setSending(true);
     setError("");
-    const result = computeResult(answers);
+    const result = computeResult(answers, q);
     const percorsoObj = result.percorso !== "consulenza" ? percorsoByHandle(result.percorso) : null;
     const utm = {};
     new URLSearchParams(window.location.search).forEach((v, k) => {
@@ -113,7 +113,7 @@ const QuizModal = () => {
       livello: result.livello,
       altroText,
       ...answers,
-    });
+    }, q);
     sessionStorage.setItem(
       "bc_quiz_result",
       JSON.stringify({ ...lead, messaggio: result.messaggio, waMsg, percorsoNome: percorsoObj?.nome || null })
@@ -153,15 +153,15 @@ const QuizModal = () => {
             className="relative flex max-h-[92vh] w-full max-w-xl flex-col overflow-hidden rounded-t-3xl bg-crema shadow-2xl sm:rounded-3xl"
             role="dialog"
             aria-modal="true"
-            aria-label="Quiz: scopri il tuo percorso"
+            aria-label={q.ariaLabel}
           >
             <div className="flex items-center justify-between px-6 pt-5">
               {step !== "intro" ? (
                 <button data-testid="quiz-back-btn" onClick={goBack} className="flex min-h-[44px] items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-antracite">
-                  <ArrowLeft size={17} /> Indietro
+                  <ArrowLeft size={17} /> {q.back}
                 </button>
               ) : <span />}
-              <button data-testid="quiz-close-btn" onClick={closeQuiz} aria-label="Chiudi il quiz" className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-muted-foreground hover:bg-elevato hover:text-antracite">
+              <button data-testid="quiz-close-btn" onClick={closeQuiz} aria-label={q.close} className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-muted-foreground hover:bg-elevato hover:text-antracite">
                 <X size={22} />
               </button>
             </div>
@@ -183,23 +183,23 @@ const QuizModal = () => {
                       <Sparkles size={26} />
                     </span>
                     <h2 className="font-serif text-3xl font-semibold leading-tight text-antracite">
-                      Di cosa ha bisogno il tuo corpo (o la tua pelle)?
+                      {q.introTitle}
                     </h2>
-                    <p className="mt-3 text-muted-foreground">Scoprilo in 1 minuto.</p>
+                    <p className="mt-3 text-muted-foreground">{q.introSub}</p>
                     <p className="mx-auto mt-5 max-w-sm rounded-2xl bg-salvia-soft px-5 py-4 text-[15px] font-medium text-[#40513c]">
-                      Alla fine ricevi un consiglio personale di Susana e il 10% sul primo trattamento.
+                      {q.introBox}
                     </p>
                     <button data-testid="quiz-start-btn" onClick={() => setStep("d1")} className="btn-primary mt-7 w-full">
-                      Inizia il quiz
+                      {q.start}
                     </button>
                   </motion.div>
                 )}
 
                 {step === "d1" && (
                   <motion.div key="d1" {...slide}>
-                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">Cosa vuoi migliorare?</h2>
+                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">{q.d1Title}</h2>
                     <div className="space-y-2.5">
-                      {D1_OPTIONS.map((o) => (
+                      {q.d1.map((o) => (
                         <OptionButton key={o.id} testid={`quiz-d1-${o.id}`} label={o.label} onClick={() => pick("d1", o.id)} />
                       ))}
                     </div>
@@ -208,25 +208,25 @@ const QuizModal = () => {
 
                 {step === "d2" && answers.d1 && (
                   <motion.div key="d2" {...slide}>
-                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">Qual è il tuo obiettivo principale?</h2>
+                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">{q.d2Title}</h2>
                     <div className="space-y-2.5">
-                      {(D2_OPTIONS[answers.d1] || []).map((o) => (
+                      {(q.d2[answers.d1] || []).map((o) => (
                         <OptionButton key={o.id} testid={`quiz-d2-${o.id}`} label={o.label} onClick={() => pick("d2", o.id)} />
                       ))}
-                      <OptionButton testid="quiz-d2-altro" label="Altro" onClick={() => pick("d2", "altro")} />
+                      <OptionButton testid="quiz-d2-altro" label={q.altroLabel} onClick={() => pick("d2", "altro")} />
                     </div>
                   </motion.div>
                 )}
 
                 {step === "altro_text" && (
                   <motion.div key="altro_text" {...slide}>
-                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">Raccontaci in poche parole cosa cerchi</h2>
+                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">{q.altroTitle}</h2>
                     <textarea
                       data-testid="quiz-altro-input"
                       value={altroText}
                       onChange={(e) => setAltroText(e.target.value)}
                       rows={4}
-                      placeholder="Scrivi qui…"
+                      placeholder={q.altroPlaceholder}
                       className="w-full rounded-2xl border border-input bg-carta p-4 text-[17px] text-antracite outline-none focus:border-rosa"
                     />
                     <button
@@ -235,16 +235,16 @@ const QuizModal = () => {
                       disabled={!altroText.trim()}
                       className="btn-primary mt-4 w-full disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      Continua
+                      {q.continueBtn}
                     </button>
                   </motion.div>
                 )}
 
                 {step === "d3" && (
                   <motion.div key="d3" {...slide}>
-                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">In che fascia d'età sei?</h2>
+                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">{q.d3Title}</h2>
                     <div className="space-y-2.5">
-                      {D3_OPTIONS.map((o) => (
+                      {q.d3.map((o) => (
                         <OptionButton key={o.id} testid={`quiz-d3-${o.id}`} label={o.label} onClick={() => pick("d3", o.id)} />
                       ))}
                     </div>
@@ -253,9 +253,9 @@ const QuizModal = () => {
 
                 {step === "d4" && (
                   <motion.div key="d4" {...slide}>
-                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">Hai già fatto trattamenti simili?</h2>
+                    <h2 className="mb-5 font-serif text-2xl font-semibold text-antracite">{q.d4Title}</h2>
                     <div className="space-y-2.5">
-                      {D4_OPTIONS.map((o) => (
+                      {q.d4.map((o) => (
                         <OptionButton key={o.id} testid={`quiz-d4-${o.id}`} label={o.label} onClick={() => pick("d4", o.id)} />
                       ))}
                     </div>
@@ -264,29 +264,29 @@ const QuizModal = () => {
 
                 {step === "contatto" && (
                   <motion.div key="contatto" {...slide}>
-                    <h2 className="mb-2 font-serif text-2xl font-semibold text-antracite">Dove ti mando il tuo risultato?</h2>
-                    <p className="mb-5 text-[15px] text-muted-foreground">Susana ti scrive personalmente su WhatsApp.</p>
+                    <h2 className="mb-2 font-serif text-2xl font-semibold text-antracite">{q.contactTitle}</h2>
+                    <p className="mb-5 text-[15px] text-muted-foreground">{q.contactSub}</p>
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="quiz-nome" className="mb-1.5 block text-sm font-semibold text-antracite">Nome</label>
+                        <label htmlFor="quiz-nome" className="mb-1.5 block text-sm font-semibold text-antracite">{q.nameLabel}</label>
                         <input
                           id="quiz-nome"
                           data-testid="quiz-nome-input"
                           value={form.nome}
                           onChange={(e) => setForm({ ...form, nome: e.target.value })}
                           className="min-h-[52px] w-full rounded-2xl border border-input bg-carta px-4 text-[17px] outline-none focus:border-rosa"
-                          placeholder="Il tuo nome"
+                          placeholder={q.namePlaceholder}
                         />
                       </div>
                       <div>
-                        <label htmlFor="quiz-telefono" className="mb-1.5 block text-sm font-semibold text-antracite">Numero WhatsApp</label>
+                        <label htmlFor="quiz-telefono" className="mb-1.5 block text-sm font-semibold text-antracite">{q.waLabel}</label>
                         <div className="flex gap-2">
                           <select
                             data-testid="quiz-prefisso-select"
                             value={form.prefisso}
                             onChange={(e) => setForm({ ...form, prefisso: e.target.value })}
                             className="min-h-[52px] rounded-2xl border border-input bg-carta px-3 text-[17px] outline-none focus:border-rosa"
-                            aria-label="Prefisso internazionale"
+                            aria-label={q.prefixAria}
                           >
                             <option value="+41">+41</option>
                             <option value="+39">+39</option>
@@ -313,8 +313,8 @@ const QuizModal = () => {
                           className="mt-1 h-5 w-5 accent-[#58998B]"
                         />
                         <span className="text-[15px] leading-snug text-antracite">
-                          Accetto che Beauty &amp; Care mi contatti su WhatsApp in merito alla mia richiesta.{" "}
-                          <a href="/privacy" target="_blank" className="text-rosa underline">Informativa privacy</a>
+                          {q.consent1}{" "}
+                          <a href="/privacy" target="_blank" className="text-rosa underline">{t.common.privacy}</a>
                         </span>
                       </label>
                       <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-carta p-4">
@@ -326,7 +326,7 @@ const QuizModal = () => {
                           className="mt-1 h-5 w-5 accent-[#58998B]"
                         />
                         <span className="text-[15px] leading-snug text-muted-foreground">
-                          Voglio ricevere consigli e novità dal centro su WhatsApp. (facoltativo)
+                          {q.consent2}
                         </span>
                       </label>
                       {error && (
@@ -338,7 +338,7 @@ const QuizModal = () => {
                         disabled={sending}
                         className="btn-primary w-full disabled:opacity-50"
                       >
-                        {sending ? "Un momento…" : "Vedi il mio risultato"}
+                        {sending ? q.sending : q.submit}
                       </button>
                     </div>
                   </motion.div>

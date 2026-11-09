@@ -3,17 +3,18 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Sparkles, Search } from "lucide-react";
 import { Logo } from "./Logo";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { useSite } from "@/lib/siteContext";
-import { LISTINO } from "@/lib/content";
+import { useLang, fmt } from "@/lib/langContext";
 
 const NAV = [
-  { to: "/corpo", label: "Corpo" },
-  { to: "/viso", label: "Viso" },
-  { to: "/percorsi", label: "Percorsi" },
-  { to: "/susana", label: "Susana" },
-  { to: "/servizi", label: "Servizi" },
-  { to: "/buoni-regalo", label: "Buoni regalo" },
-  { to: "/contatti", label: "Contatti" },
+  { to: "/corpo", key: "corpo", id: "corpo" },
+  { to: "/viso", key: "viso", id: "viso" },
+  { to: "/percorsi", key: "percorsi", id: "percorsi" },
+  { to: "/susana", key: "susana", id: "susana" },
+  { to: "/servizi", key: "servizi", id: "servizi" },
+  { to: "/buoni-regalo", key: "buoni", id: "buoni-regalo" },
+  { to: "/contatti", key: "contatti", id: "contatti" },
 ];
 
 const Navbar = () => {
@@ -21,16 +22,18 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const { openQuiz } = useSite();
+  const { t } = useLang();
   const location = useLocation();
   const navigate = useNavigate();
   const onLink = location.pathname === "/link";
 
   if (onLink) return null;
 
+  const listino = t.listino || [];
   const q = query.trim().toLowerCase();
   const results = q.length < 2
     ? []
-    : LISTINO.flatMap((f) => f.voci.map((v) => ({ ...v, famiglia: f.famiglia })))
+    : listino.flatMap((f) => f.voci.map((v) => ({ ...v, famiglia: f.famiglia })))
         .filter((v) => v.nome.toLowerCase().includes(q) || v.famiglia.toLowerCase().includes(q))
         .slice(0, 6);
 
@@ -41,36 +44,37 @@ const Navbar = () => {
   };
 
   const prezzoLabel = (p) =>
-    p == null ? "" : p === "gratuita" ? "Gratuita" : typeof p === "string" ? `da CHF ${p.replace("da ", "")}` : `CHF ${p}`;
+    p == null ? "" : p === "gratuita" ? t.common.free : typeof p === "string" ? fmt(t.common.fromChf, { v: p.replace("da ", "") }) : fmt(t.common.chf, { v: p });
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-crema/90 backdrop-blur-md">
       <div className="container-site flex h-[76px] items-center justify-between gap-4">
-        <Link to="/" data-testid="nav-logo" aria-label="Beauty & Care Losone – Homepage" onClick={() => setOpen(false)}>
+        <Link to="/" data-testid="nav-logo" aria-label={t.common.homeAria} onClick={() => setOpen(false)}>
           <Logo />
         </Link>
-        <nav className="hidden items-center gap-6 lg:flex" aria-label="Navigazione principale">
+        <nav className="hidden items-center gap-6 lg:flex" aria-label={t.common.navAria}>
           {NAV.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
-              data-testid={`nav-link-${item.label.toLowerCase().replace(/\s/g, "-")}`}
+              data-testid={`nav-link-${item.id}`}
               className={({ isActive }) =>
                 `text-[15px] font-medium transition-colors duration-200 hover:text-rosa ${
                   isActive ? "text-rosa" : "text-antracite/80"
                 }`
               }
             >
-              {item.label}
+              {t.nav[item.key]}
             </NavLink>
           ))}
         </nav>
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <button
             data-testid="nav-search-toggle"
             onClick={() => { setSearchOpen((v) => !v); setOpen(false); }}
             className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full text-antracite transition-colors hover:bg-elevato"
-            aria-label="Cerca un trattamento"
+            aria-label={t.common.searchAria}
           >
             {searchOpen ? <X size={22} /> : <Search size={22} />}
           </button>
@@ -80,13 +84,13 @@ const Navbar = () => {
             className="hidden min-h-[48px] items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-foreground shadow-sm transition-[background-color,transform] duration-300 hover:bg-rosa-hover hover:-translate-y-0.5 sm:inline-flex"
           >
             <Sparkles size={17} strokeWidth={2.2} />
-            Scopri il tuo percorso
+            {t.common.discover}
           </button>
           <button
             data-testid="nav-menu-toggle"
             className="inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full text-antracite lg:hidden"
             onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Chiudi menu" : "Apri menu"}
+            aria-label={open ? t.common.closeMenu : t.common.openMenu}
           >
             {open ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -111,7 +115,7 @@ const Navbar = () => {
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Cosa stai cercando? Es. pressoterapia, laser, manicure…"
+                  placeholder={t.common.searchPlaceholder}
                   className="min-h-[52px] w-full rounded-full border border-input bg-carta pr-5 text-[17px] text-antracite shadow-sm outline-none focus:border-rosa"
                   style={{ paddingLeft: "3rem" }}
                 />
@@ -133,7 +137,7 @@ const Navbar = () => {
                     </button>
                   ))}
                   {results.length === 0 && (
-                    <p className="px-5 py-4 text-sm text-muted-foreground" data-testid="nav-search-empty">Nessun trattamento trovato per “{query}”.</p>
+                    <p className="px-5 py-4 text-sm text-muted-foreground" data-testid="nav-search-empty">{fmt(t.common.searchEmpty, { q: query })}</p>
                   )}
                 </div>
               )}
@@ -149,14 +153,14 @@ const Navbar = () => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden border-t border-border/60 bg-crema lg:hidden"
-            aria-label="Menu mobile"
+            aria-label={t.common.mobileMenuAria}
           >
             <div className="container-site flex flex-col gap-1 py-4">
               {NAV.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  data-testid={`nav-mobile-${item.label.toLowerCase().replace(/\s/g, "-")}`}
+                  data-testid={`nav-mobile-${item.id}`}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `flex min-h-[48px] items-center rounded-xl px-4 text-lg font-medium ${
@@ -164,7 +168,7 @@ const Navbar = () => {
                     }`
                   }
                 >
-                  {item.label}
+                  {t.nav[item.key]}
                 </NavLink>
               ))}
               <button
@@ -172,8 +176,9 @@ const Navbar = () => {
                 onClick={() => { setOpen(false); openQuiz(); }}
                 className="btn-primary mt-3 w-full"
               >
-                <Sparkles size={18} /> Scopri il tuo percorso
+                <Sparkles size={18} /> {t.common.discover}
               </button>
+              <LanguageSwitcher inMobileMenu />
             </div>
           </motion.nav>
         )}

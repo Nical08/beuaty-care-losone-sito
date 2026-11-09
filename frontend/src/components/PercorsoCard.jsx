@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useLang, fmt } from "@/lib/langContext";
 
 const AREA_BADGE = {
   corpo: "bg-salvia-soft text-[#4c5c48]",
@@ -11,6 +12,7 @@ const AREA_BADGE = {
 };
 
 const PercorsoCard = ({ percorso, areaNome, small = false }) => {
+  const { t } = useLang();
   const prezzoMin = Math.min(...percorso.livelli.map((l) => l.prezzo));
   return (
     <Link
@@ -21,9 +23,9 @@ const PercorsoCard = ({ percorso, areaNome, small = false }) => {
       <div>
         <div className="mb-3 flex items-center justify-between">
           <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${AREA_BADGE[percorso.area] || "bg-elevato text-antracite"}`}>
-            {areaNome || percorso.area}
+            {areaNome || t.aree?.[percorso.area] || percorso.area}
           </span>
-          <span className="text-xs text-muted-foreground">Percorso n. {percorso.numero}</span>
+          <span className="text-xs text-muted-foreground">{fmt(t.common.percorsoN, { n: percorso.numero })}</span>
         </div>
         <h3 className={`font-serif font-semibold text-antracite ${small ? "text-xl" : "text-2xl"}`}>
           {percorso.nome}
@@ -34,10 +36,10 @@ const PercorsoCard = ({ percorso, areaNome, small = false }) => {
       </div>
       <div className="mt-5 flex items-center justify-between">
         <span className="text-lg font-semibold text-antracite">
-          da CHF {prezzoMin}
+          {fmt(t.common.fromChf, { v: prezzoMin })}
         </span>
         <span className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-rosa transition-transform duration-300 group-hover:translate-x-1">
-          Scopri il percorso <ArrowRight size={16} />
+          {t.common.scopriPercorso} <ArrowRight size={16} />
         </span>
       </div>
     </Link>

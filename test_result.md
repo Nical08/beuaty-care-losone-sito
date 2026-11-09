@@ -1,3 +1,12 @@
+# Test Result - Multilingua EN/FR/DE: COMPLETATO ✅
+## Test frontend completo PASS: 4 lingue, selettore desktop+mobile, persistenza localStorage, tutte le pagine pubbliche tradotte (corpo/viso/percorsi/dettaglio/servizi/susana/contatti/buoni/faq/privacy/link), quiz in EN/FR, ricerca servizi, prezzi CHF invariati, admin in italiano, zero errori console e zero richieste /undefined/. Pronto per la pubblicazione.
+
+
+# Test Result - Multilingua EN/FR/DE (lavoro in corso)
+## Stato: implementazione frontend completata, compilazione OK, verifica visiva OK (IT/EN/DE con selettore e rilevamento browser).
+## Prossimo: test frontend completo su tutte le pagine e lingue, in attesa di autorizzazione utente.
+
+
 #====================================================================================================
 # START - Testing Protocol - DO NOT EDIT OR REMOVE THIS SECTION
 #====================================================================================================

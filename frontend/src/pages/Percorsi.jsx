@@ -1,30 +1,32 @@
 import Reveal from "@/components/Reveal";
 import PercorsoCard from "@/components/PercorsoCard";
-import { GARANZIA } from "@/lib/content";
 import { useSite } from "@/lib/siteContext";
+import { useLang } from "@/lib/langContext";
 import { ShieldCheck } from "lucide-react";
 
 const Percorsi = () => {
   const { percorsi, aree } = useSite();
+  const { t } = useLang();
+  const c = t.percorsiPage;
   const evidenza = percorsi.filter((p) => p.in_evidenza);
 
   return (
     <div data-testid="percorsi-page">
       <section className="container-site py-16 lg:py-24">
         <Reveal>
-          <p className="eyebrow mb-3">I percorsi</p>
+          <p className="eyebrow mb-3">{c.eyebrow}</p>
           <h1 className="max-w-2xl font-serif text-4xl font-semibold leading-tight text-antracite sm:text-5xl">
-            Più servizi insieme, un risultato più completo
+            {c.h1}
           </h1>
           <p className="mt-5 max-w-xl leading-relaxed text-muted-foreground">
-            Ogni percorso inizia con la consulenza inclusa. Scegli l'area che ti sta a cuore: al resto pensiamo insieme.
+            {c.p}
           </p>
         </Reveal>
 
         {evidenza.length > 0 && (
           <div className="mt-14">
             <Reveal>
-              <h2 className="font-serif text-2xl font-semibold text-rosa">In evidenza questo mese</h2>
+              <h2 className="font-serif text-2xl font-semibold text-rosa">{c.evidenza}</h2>
             </Reveal>
             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:max-w-3xl">
               {evidenza.map((p) => (
@@ -56,7 +58,7 @@ const Percorsi = () => {
         <Reveal>
           <div className="mt-20 flex items-start gap-4 rounded-[2rem] bg-salvia-soft p-8">
             <ShieldCheck size={30} className="mt-1 shrink-0 text-[#4c5c48]" />
-            <p className="leading-relaxed text-antracite/85">{GARANZIA}</p>
+            <p className="leading-relaxed text-antracite/85">{t.garanzia}</p>
           </div>
         </Reveal>
       </section>
