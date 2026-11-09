@@ -101,3 +101,76 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: "Aggiungere ADMIN_EMAIL, ADMIN_PASSWORD e una nuova JWT_SECRET in backend/.env, poi importare i dati dal vecchio progetto con /app/scripts/import_data.py"
+## backend:
+##   - task: "Configurazione credenziali admin e JWT"
+##     implemented: true
+##     working: true
+##     file: "backend/.env"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: false
+##     status_history:
+##         -working: "NA"
+##         -agent: "main"
+##         -comment: "Variabili richieste aggiunte; il backend non completa l'avvio perché MONGO_URL e DB_NAME non sono presenti nel backend/.env."
+##         -working: false
+##         -agent: "testing"
+##         -comment: "VERIFICATO: backend/.env contiene ADMIN_EMAIL, ADMIN_PASSWORD e JWT_SECRET. PROBLEMA CRITICO: il backend non può avviarsi - KeyError: 'MONGO_URL' a server.py:24. Il file backend/.env manca di MONGO_URL e DB_NAME necessari per l'avvio. Backend logs mostrano crash continuo del processo. Impossibile testare login admin o endpoint autenticati senza backend funzionante."
+##         -working: "NA"
+##         -agent: "main"
+##         -comment: "Su conferma utente aggiunti MONGO_URL=mongodb://localhost:27017 e DB_NAME=test_database; backend riavviato e il log mostra startup completato. Richiesta nuova verifica."
+##         -working: true
+##         -agent: "testing"
+##         -comment: "VERIFICA COMPLETATA DOPO AGGIUNTA MONGO_URL E DB_NAME. RISULTATI: (1) ✅ Backend avviato con successo - nessun KeyError, nessun crash, processo stabile (PID 1445); (2) ✅ Login admin funzionante con credenziali da test_credentials.md (susana@beautycare-losone.ch); (3) ✅ Endpoint autenticati verificati: GET /api/quiz-leads (5 leads), GET /api/event-rsvps (2 RSVPs, 4 persone); (4) ✅ Conteggi database: event_rsvps=2, login_attempts=1, quiz_leads=5, stats_events=215 tutti corretti. NOTA MINORE: settings=2 invece di 1 (backend crea automaticamente _id:'site' allo startup, import ha aggiunto altro documento; non impatta funzionalità). Configurazione backend completamente funzionante."
+##   - task: "Import dati dal vecchio progetto"
+##     implemented: true
+##     working: true
+##     file: "scripts/import_data.py"
+##     stuck_count: 0
+##     priority: "high"
+##     needs_retesting: false
+##     status_history:
+##         -working: true
+##         -agent: "main"
+##         -comment: "Import completato nel database locale di fallback test_database: event_rsvps 2, login_attempts 1, quiz_leads 5, settings 1, stats_events 215. Lo script salta le collezioni già popolate."
+##         -working: true
+##         -agent: "testing"
+##         -comment: "VERIFICATO nel database test_database: event_rsvps=2, login_attempts=1, quiz_leads=5, settings=1, stats_events=215. Tutti i conteggi corrispondono esattamente a quanto atteso. Import completato con successo."
+##
+## frontend:
+##   - task: "Frontend non modificato"
+##     implemented: false
+##     working: "NA"
+##     file: "frontend"
+##     stuck_count: 0
+##     priority: "low"
+##     needs_retesting: false
+##     status_history:
+##         -working: "NA"
+##         -agent: "main"
+##         -comment: "Nessuna modifica frontend richiesta."
+##
+## metadata:
+##   created_by: "main_agent"
+##   version: "1.0"
+##   test_sequence: 3
+##   run_ui: false
+##
+## test_plan:
+##   current_focus:
+##     - "Verifica completata con successo"
+##   stuck_tasks: []
+##   test_all: false
+##   test_priority: "high_first"
+##
+## agent_communication:
+##     -agent: "main"
+##     -message: "Credenziali admin e JWT_SECRET configurati. Import eseguito con successo, ma il backend segnala KeyError: MONGO_URL perché il file backend/.env originale non esisteva e non contiene MONGO_URL/DB_NAME."
+##     -agent: "testing"
+##     -message: "TEST COMPLETATO. RISULTATI: (1) ✓ backend/.env contiene ADMIN_EMAIL, ADMIN_PASSWORD, JWT_SECRET; (2) ✗ Backend NON avviabile - mancano MONGO_URL e DB_NAME in backend/.env, causando KeyError a server.py:24; (3) ✓ Import database verificato: tutti i conteggi corretti (event_rsvps=2, login_attempts=1, quiz_leads=5, settings=1, stats_events=215); (4) ✗ Impossibile testare login admin e endpoint autenticati perché backend non parte. AZIONE RICHIESTA: aggiungere MONGO_URL e DB_NAME a backend/.env per permettere l'avvio del backend."
+##     -agent: "main"
+##     -message: "Su conferma utente aggiunti MONGO_URL=mongodb://localhost:27017 e DB_NAME=test_database; backend riavviato e il log mostra startup completato. Richiesta nuova verifica."
+##     -agent: "testing"
+##     -message: "VERIFICA FINALE COMPLETATA CON SUCCESSO. Tutti i requisiti soddisfatti: (1) ✅ Backend avviato senza KeyError e senza crash; (2) ✅ Login admin funzionante con credenziali corrette; (3) ✅ Endpoint autenticati verificati e funzionanti; (4) ✅ Conteggi database verificati (4/5 esatti, settings ha 1 documento extra dal backend startup ma non impatta funzionalità). Nessun codice o configurazione modificato durante la verifica. Sistema completamente operativo."
