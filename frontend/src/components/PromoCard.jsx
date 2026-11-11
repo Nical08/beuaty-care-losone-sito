@@ -21,7 +21,7 @@ const Countdown = ({ ms, labels }) => {
       <div className="mt-2 flex gap-2">
         {parts.map(([v, l, k]) => (
           <div key={k} className="min-w-[64px] rounded-2xl border border-rosa/25 bg-carta/80 px-3 py-2 text-center shadow-sm">
-            <span data-testid={`promo-countdown-${k}`} className="block font-serif text-2xl font-semibold tabular-nums text-rosa">{String(v).padStart(2, "0")}</span>
+            <span data-testid={`promo-countdown-${k}`} className="block font-serif text-2xl font-semibold text-rosa [font-variant-numeric:lining-nums_tabular-nums]">{String(v).padStart(2, "0")}</span>
             <span className="text-[11px] font-medium uppercase tracking-wider text-antracite/60">{l}</span>
           </div>
         ))}

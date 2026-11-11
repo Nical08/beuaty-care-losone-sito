@@ -9,6 +9,7 @@ import logging
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List
+from zoneinfo import ZoneInfo
 
 import jwt
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends
@@ -103,17 +104,23 @@ PROMO_FIELDS = set(DEFAULT_SETTINGS["promo_testi"]["it"].keys())
 
 
 def validate_promo(allowed: dict):
+    for k, v in allowed.items():
+        if isinstance(DEFAULT_SETTINGS[k], bool) and not isinstance(v, bool):
+            raise HTTPException(status_code=422, detail=f"Valore non valido per {k}")
     if "promo_scadenza" in allowed:
         try:
-            datetime.fromisoformat(str(allowed["promo_scadenza"]).replace("Z", "+00:00"))
+            dt = datetime.fromisoformat(str(allowed["promo_scadenza"]).replace("Z", "+00:00"))
         except ValueError:
             raise HTTPException(status_code=422, detail="Data di scadenza non valida")
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=ZoneInfo("Europe/Zurich"))
+        allowed["promo_scadenza"] = dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     if "promo_testi" in allowed:
         testi = allowed["promo_testi"]
         if not isinstance(testi, dict) or not isinstance(testi.get("it"), dict):
             raise HTTPException(status_code=422, detail="Testi promo non validi")
         allowed["promo_testi"] = {
-            lang: {k: str(v)[:500] for k, v in (fields or {}).items() if k in PROMO_FIELDS}
+            lang: {k: ("" if v is None else str(v))[:500] for k, v in (fields or {}).items() if k in PROMO_FIELDS}
             for lang, fields in testi.items() if lang in PROMO_LANGS and isinstance(fields, dict)
         }
         if not allowed["promo_testi"]["it"].get("title", "").strip():

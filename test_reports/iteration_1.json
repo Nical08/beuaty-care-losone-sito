@@ -1,0 +1,38 @@
+{
+  "summary": "Tested the admin-managed monthly promo with countdown end to end. Backend: 11 out of 11 pytest checks passed. They cover the GET defaults; the PUT toggle, date and texts; 422 for an invalid or empty date, a missing or blank Italian title, or promo_testi that is not an object; 401 with no token or a bad token; and unknown languages and fields being stripped. Frontend: everything requested worked. The Home promo card shows title, prices and badge. The countdown ticks every second. All four languages show translated texts and countdown labels. An empty EN title falls back to the Italian one. The admin editor has all 10 fields, the toggle, the date input and the language tabs. Saving shows 'Promo salvata.' A blank Italian title shows the backend error. Switching the promo off hides the card. A past date shows the warning and hides the card. Setting a date 40 seconds ahead made the card disappear by itself, with no reload. The original state was restored at the end and checked to be identical to the snapshot taken before testing: promo_attiva true, promo_scadenza 2026-11-30T22:59:59.000Z, original promo_testi.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/settings", "issue": "promo_attiva is not type-validated. The string \"false\" is accepted and stored, and the frontend treats it as truthy, so the promo stays visible. The same applies to the other boolean flags. Coerce or validate to bool."},
+      {"endpoint": "PUT /api/settings", "issue": "promo_scadenza accepts dates with no timezone (e.g. '2026-11-30') and stores them raw. new Date() on the client then reads them inconsistently (date-only is read as UTC, date-time as local). Normalise to a UTC ISO string on the server."},
+      {"endpoint": "PUT /api/settings", "issue": "A null field value inside promo_testi becomes the string 'None', because of str(v)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Admin flag toggle while the promo editor has unsaved edits", "issue": "The PromoEditor useEffect depends on the settings.promo_testi reference. Clicking any other admin flag replaces settings with a new object, which silently wipes unsaved promo edits.", "affected_selectors": ["[data-testid^=admin-flag-]", "[data-testid=admin-promo-editor]"]}
+    ],
+    "design_issues": [
+      {"screen": "Admin promo editor", "issues": ["Uses the browser's native datetime-local picker instead of the shadcn calendar. The time is entered in the admin's browser timezone, not explicitly Swiss time. That is fine if the admin is in Switzerland, but there is no label saying so."]},
+      {"screen": "Home promo countdown", "issues": ["The serif font shows the countdown digits as old-style figures (e.g. '19' looks uneven). Consider font-variant-numeric: lining-nums tabular-nums, or a sans font for the digits."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_promo_settings.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Optional: validate promo_attiva (and the other flags) as bool in update_settings",
+    "Optional: normalise promo_scadenza to a UTC ISO string and reject naive datetimes",
+    "Optional: stop PromoEditor from overwriting unsaved edits when other settings change (e.g. sync only on first load or after a promo save)"
+  ],
+  "critical_code_review_comments": [
+    "validate_promo: str(v) turns None into 'None'. Use v or ''.",
+    "PromoCard: if the Italian texts lack a key that another language has, Object.keys(base) drops that key. This is fine given the backend requires Italian, but it is fragile.",
+    "The rest of the implementation is clean. _id is excluded from GET /api/settings."
+  ],
+  "updated_files": ["/app/backend/tests/test_promo_settings.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "None. Promo settings were changed temporarily during the tests and restored exactly to the original snapshot, checked by GET equality.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "The admin login is in /app/memory/test_credentials.md. Before visiting Home, set sessionStorage bc_quiz_dismissed=1 (the quiz popup blocks clicks) and localStorage bc_lang to the language you want; the browser auto-detects EN. The test file restores the promo settings in a module teardown. pytest.ini uses xdist (-n), so do not pass -p no:xdist."
+}

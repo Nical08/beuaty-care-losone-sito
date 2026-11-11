@@ -101,3 +101,9 @@
 1. Raccogliere da utente: numero WhatsApp, link Fresha, contatti.
 2. Collegare Shopify quando arrivano le credenziali.
 3. Sostituire segnaposto con materiali reali.
+
+## 2026-06 — Promo del mese gestibile da Admin
+- Backend settings: promo_attiva (bool), promo_scadenza (UTC ISO; date senza fuso = ora svizzera), promo_testi {it,en,fr,de} (badge,title,text,priceUnit,priceNote,priceTotal,priceOld,ctaFresha,ctaWa,waMsg). Validazione in validate_promo.
+- Frontend: components/PromoCard.jsx (Home, countdown live, sparisce alla scadenza, fallback italiano per campi vuoti), components/PromoEditor.jsx (Admin).
+- Testato: iteration_1 (backend 11/11, frontend OK) + fix minori (validazione booleani, normalizzazione data, None).
+- Backlog: ripubblicazione dopo approvazione anteprima dell'utente.

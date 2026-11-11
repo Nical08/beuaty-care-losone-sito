@@ -35,7 +35,8 @@ export const PromoEditor = ({ token }) => {
     setAttiva(!!settings.promo_attiva);
     setScadenza(toLocalInput(settings.promo_scadenza));
     setTesti(settings.promo_testi || {});
-  }, [settings.promo_attiva, settings.promo_scadenza, settings.promo_testi]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.promo_attiva, settings.promo_scadenza, JSON.stringify(settings.promo_testi || {})]);
 
   const setField = (k, v) => setTesti({ ...testi, [tab]: { ...(testi[tab] || {}), [k]: v } });
   const scaduta = scadenza && new Date(scadenza) <= new Date();
@@ -66,7 +67,7 @@ export const PromoEditor = ({ token }) => {
           <input type="checkbox" data-testid="admin-promo-toggle" checked={attiva} onChange={(e) => setAttiva(e.target.checked)} className="h-5 w-5 accent-[#58998B]" />
         </label>
         <label className="block rounded-2xl border border-border bg-crema px-4 py-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Scadenza (fine promo)</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Scadenza (fine promo, ora svizzera)</span>
           <input type="datetime-local" data-testid="admin-promo-scadenza" value={scadenza} onChange={(e) => setScadenza(e.target.value)} className="mt-1 block w-full bg-transparent outline-none" />
         </label>
       </div>
