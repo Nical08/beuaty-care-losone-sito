@@ -949,11 +949,12 @@ export const fr = {
     },
     "laser-senza-pensieri": {
       nome: "Laser sans soucis",
-      promessa: "La liberté de ne plus y penser.",
-      adatto_a: "Pour celles qui cherchent une solution durable aux poils superflus, avec laser à diode et certificat fédéral O-LRNIS.",
+      promessa: "Moins de rasoir. Moins d'effort. Plus de temps pour vous.",
+      adatto_a: "L'épilation laser demande plusieurs rendez-vous, mais à long terme elle réduit durablement les poils. Laser à diode avec certificat fédéral O-LRNIS.",
+      promo: "Promo novembre",
       livelli: [
-        { titolo: "Niveau 1 – Base", servizi: "1 séance sur petite zone" },
-        { titolo: "Niveau 2 – Conseillé", servizi: "6 séances sur petite zone" },
+        { titolo: "Niveau 1 – Séance d'essai", servizi: "1 séance d'essai sur petite zone : -70 %" },
+        { titolo: "Niveau 2 – Conseillé", servizi: "6 séances sur petite zone : -20 %" },
         { titolo: "Niveau 3 – Complet", servizi: "6 séances sur petite zone + une zone moyenne" },
       ],
       faq: [{ d: "Le laser fait-il mal ?", r: "La sensation est personnelle : en consultation, je vous explique comment il fonctionne et nous testons sur une petite zone." }],

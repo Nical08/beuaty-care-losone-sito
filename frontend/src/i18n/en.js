@@ -949,11 +949,12 @@ export const en = {
     },
     "laser-senza-pensieri": {
       nome: "Worry-free Laser",
-      promessa: "The freedom of not thinking about it anymore.",
-      adatto_a: "For those looking for a long-lasting solution to unwanted hair, with diode laser and federal O-LRNIS certificate.",
+      promessa: "Less razor. Less effort. More time for you.",
+      adatto_a: "Laser hair removal takes several appointments, but in the long term it reduces hair lastingly. Diode laser with federal O-LRNIS certificate.",
+      promo: "November promo",
       livelli: [
-        { titolo: "Level 1 – Basic", servizi: "1 session on a small area" },
-        { titolo: "Level 2 – Recommended", servizi: "6 sessions on a small area" },
+        { titolo: "Level 1 – Trial session", servizi: "1 trial session on a small area: -70%" },
+        { titolo: "Level 2 – Recommended", servizi: "6 sessions on a small area: -20%" },
         { titolo: "Level 3 – Complete", servizi: "6 sessions on a small area + one medium area" },
       ],
       faq: [{ d: "Does the laser hurt?", r: "The sensation is personal: in the consultation I explain how it works and we test on a small area." }],

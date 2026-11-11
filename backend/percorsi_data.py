@@ -88,16 +88,17 @@ PERCORSI = [
     },
     {
         "handle": "laser-senza-pensieri", "numero": 5, "nome": "Laser senza pensieri", "area": "peli",
-        "promessa": "La libertà di non pensarci più.",
-        "adatto_a": "Per chi cerca una soluzione duratura ai peli superflui, con laser a diodo e attestato federale O-LRNIS.",
+        "promessa": "Meno rasoio. Meno sforzo. Più tempo per te.",
+        "adatto_a": "La depilazione laser richiede diversi appuntamenti, ma a lungo termine riduce i peli in modo duraturo. Laser a diodo con attestato federale O-LRNIS.",
+        "promo": "Promo novembre",
         "tecnologie": ["Laser a diodo (attestato federale O-LRNIS)"],
         "livelli": [
-            {"n": 1, "titolo": "Livello 1 – Base", "servizi": "1 seduta su zona piccola", "prezzo": 80, "prezzo_pieno": None, "opzioni": None},
-            {"n": 2, "titolo": "Livello 2 – Consigliato", "servizi": "6 sedute su zona piccola", "prezzo": 456, "prezzo_pieno": 480, "opzioni": None},
+            {"n": 1, "titolo": "Livello 1 – Seduta di prova", "servizi": "1 seduta di prova su zona piccola: -70%", "prezzo": 24, "prezzo_pieno": 80, "opzioni": None},
+            {"n": 2, "titolo": "Livello 2 – Consigliato", "servizi": "6 sedute su zona piccola: -20%", "prezzo": 384, "prezzo_pieno": 480, "opzioni": None},
             {"n": 3, "titolo": "Livello 3 – Completo", "servizi": "6 sedute su zona piccola + una zona media", "prezzo": 1134, "prezzo_pieno": 1260, "opzioni": None},
         ],
         "faq": [{"d": "Il laser fa male?", "r": "La sensazione è personale: in consulenza ti spiego come funziona e proviamo su una piccola zona."}],
-        "in_evidenza": False, "stagionale": "Novembre - febbraio",
+        "in_evidenza": True, "stagionale": "Novembre - febbraio",
     },
     {
         "handle": "liscia-tutto-l-anno", "numero": 6, "nome": "Liscia tutto l'anno", "area": "peli",
@@ -171,7 +172,7 @@ PERCORSI = [
             {"n": 3, "titolo": "Livello 3 – Completo", "servizi": "6 semipermanenti piedi", "prezzo": 324, "prezzo_pieno": 360, "opzioni": "In alternativa: 3 refill gel CHF 210 (valore CHF 225)"},
         ],
         "faq": [{"d": "Quanto dura il semipermanente?", "r": "Di solito 3-4 settimane: con il percorso le sedute sono già programmate."}],
-        "in_evidenza": True, "stagionale": "Giugno - agosto",
+        "in_evidenza": False, "stagionale": "Giugno - agosto",
     },
 ]
 

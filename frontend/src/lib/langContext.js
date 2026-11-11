@@ -81,6 +81,7 @@ export const localizePercorso = (p, t) => {
   if (tr.nome) out.nome = tr.nome;
   if (tr.promessa) out.promessa = tr.promessa;
   if (tr.adatto_a) out.adatto_a = tr.adatto_a;
+  if (tr.promo && out.promo) out.promo = tr.promo;
   if (Array.isArray(out.livelli) && Array.isArray(tr.livelli)) {
     out.livelli = out.livelli.map((l, i) => ({
       ...l,

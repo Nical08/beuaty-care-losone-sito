@@ -25,7 +25,11 @@ const PercorsoCard = ({ percorso, areaNome, small = false }) => {
           <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${AREA_BADGE[percorso.area] || "bg-elevato text-antracite"}`}>
             {areaNome || t.aree?.[percorso.area] || percorso.area}
           </span>
-          <span className="text-xs text-muted-foreground">{fmt(t.common.percorsoN, { n: percorso.numero })}</span>
+          {percorso.promo ? (
+            <span data-testid={`percorso-promo-${percorso.handle}`} className="rounded-full bg-rosa px-3 py-1 text-xs font-bold uppercase tracking-wider text-carta">{percorso.promo}</span>
+          ) : (
+            <span className="text-xs text-muted-foreground">{fmt(t.common.percorsoN, { n: percorso.numero })}</span>
+          )}
         </div>
         <h3 className={`font-serif font-semibold text-antracite ${small ? "text-xl" : "text-2xl"}`}>
           {percorso.nome}

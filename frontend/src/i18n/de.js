@@ -949,11 +949,12 @@ export const de = {
     },
     "laser-senza-pensieri": {
       nome: "Laser ohne Sorgen",
-      promessa: "Die Freiheit, nicht mehr daran denken zu müssen.",
-      adatto_a: "Für alle, die eine dauerhafte Lösung gegen unerwünschte Haare suchen, mit Diodenlaser und eidgenössischem O-LRNIS-Zertifikat.",
+      promessa: "Weniger Rasierer. Weniger Aufwand. Mehr Zeit für dich.",
+      adatto_a: "Die Laser-Haarentfernung braucht mehrere Termine, reduziert die Haare aber langfristig und dauerhaft. Diodenlaser mit eidgenössischem O-LRNIS-Zertifikat.",
+      promo: "November-Promo",
       livelli: [
-        { titolo: "Level 1 – Basis", servizi: "1 Sitzung auf kleiner Zone" },
-        { titolo: "Level 2 – Empfohlen", servizi: "6 Sitzungen auf kleiner Zone" },
+        { titolo: "Level 1 – Probesitzung", servizi: "1 Probesitzung auf kleiner Zone: -70 %" },
+        { titolo: "Level 2 – Empfohlen", servizi: "6 Sitzungen auf kleiner Zone: -20 %" },
         { titolo: "Level 3 – Komplett", servizi: "6 Sitzungen auf kleiner Zone + eine mittlere Zone" },
       ],
       faq: [{ d: "Tut der Laser weh?", r: "Das Gefühl ist persönlich: In der Beratung erkläre ich dir, wie er funktioniert, und wir testen auf einer kleinen Zone." }],

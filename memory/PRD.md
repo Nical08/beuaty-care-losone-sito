@@ -110,3 +110,7 @@
 
 ## 2026-06 — Fix numero WhatsApp
 - whatsapp_number corretto da 417964944005 (errato) a 41796494005; migrazione automatica allo startup per DB esistenti (anche produzione al prossimo deploy).
+
+## 2026-06 — Promo laser novembre
+- "Laser senza pensieri" in evidenza al posto di "Mani e piedi in ordine"; slogan "Meno rasoio. Meno sforzo. Più tempo per te."; badge Promo novembre (campo promo); L1 seduta di prova CHF 24 (invece di 80, -70%), L2 6 sedute CHF 384 (invece di 480, -20%). Tradotto EN/FR/DE.
+- Da ripristinare a mano a fine promo (prezzi e badge in percorsi_data.py).
