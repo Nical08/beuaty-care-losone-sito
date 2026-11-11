@@ -107,3 +107,6 @@
 - Frontend: components/PromoCard.jsx (Home, countdown live, sparisce alla scadenza, fallback italiano per campi vuoti), components/PromoEditor.jsx (Admin).
 - Testato: iteration_1 (backend 11/11, frontend OK) + fix minori (validazione booleani, normalizzazione data, None).
 - Backlog: ripubblicazione dopo approvazione anteprima dell'utente.
+
+## 2026-06 — Fix numero WhatsApp
+- whatsapp_number corretto da 417964944005 (errato) a 41796494005; migrazione automatica allo startup per DB esistenti (anche produzione al prossimo deploy).

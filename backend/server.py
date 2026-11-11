@@ -39,7 +39,7 @@ DEFAULT_SETTINGS = {
     "banner_buoni_regalo_attivo": True,
     "sconto_quiz_attivo": True,
     "rme_valido": True,
-    "whatsapp_number": "417964944005",
+    "whatsapp_number": "41796494005",
     "fresha_url": "https://www.fresha.com/it/a/estetica-beauty-and-care-losone-via-locarno-58-jwl8ceyb/booking",
     "fresha_consulenza_url": "",
     "fresha_buoni_url": "",
@@ -379,6 +379,7 @@ async def startup():
     existing = await db.settings.find_one({"_id": "site"})
     if not existing:
         await db.settings.insert_one({"_id": "site", **DEFAULT_SETTINGS})
+    await db.settings.update_one({"_id": "site", "whatsapp_number": "417964944005"}, {"$set": {"whatsapp_number": "41796494005"}})
 
 
 @app.on_event("shutdown")
