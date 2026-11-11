@@ -71,6 +71,18 @@ export const fr = {
       cta: "Confirmez votre présence",
     },
     evidenza: { eyebrow: "À la une ce mois-ci", title: "Les parcours du moment" },
+    promo: {
+      badge: "Promo · Novembre",
+      title: "Pressothérapie",
+      text: "Uniquement en novembre : forfait promo de 10 séances de pressothérapie, pour des jambes légères et un drainage profond.",
+      priceUnit: "CHF 50",
+      priceNote: "la séance au lieu de CHF 60",
+      priceTotal: "10 séances : CHF 500",
+      priceOld: "au lieu de CHF 600",
+      ctaFresha: "Réserver sur Fresha",
+      ctaWa: "Écrivez-nous sur WhatsApp",
+      waMsg: "Bonjour, je souhaiterais réserver la promo de novembre : 10 séances de pressothérapie à CHF 50 chacune.",
+    },
     corpo: {
       eyebrow: "La spécialisation",
       h2: "Le corps est ma spécialisation",

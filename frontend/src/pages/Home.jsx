@@ -8,6 +8,7 @@ import FreshaButton from "@/components/FreshaButton";
 import { IMAGES, GOOGLE_RECENSIONI_URL } from "@/lib/content";
 import { useSite } from "@/lib/siteContext";
 import { useLang } from "@/lib/langContext";
+import { waLink } from "@/components/WhatsAppFab";
 
 const HeroLine = ({ children, delay }) => (
   <span className="mask-line">
@@ -134,21 +135,57 @@ const Home = () => {
       )}
 
       {/* IN EVIDENZA */}
-      {evidenza.length > 0 && (
-        <section className="container-site py-20 lg:py-24">
-          <Reveal>
-            <p className="eyebrow mb-3">{c.evidenza.eyebrow}</p>
-            <h2 className="font-serif text-3xl font-semibold text-antracite sm:text-4xl">{c.evidenza.title}</h2>
-          </Reveal>
-          <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:max-w-3xl">
+      <section className="container-site py-20 lg:py-24">
+        <Reveal>
+          <p className="eyebrow mb-3">{c.evidenza.eyebrow}</p>
+          <h2 className="font-serif text-3xl font-semibold text-antracite sm:text-4xl">{c.evidenza.title}</h2>
+        </Reveal>
+
+        {/* PROMO DEL MESE */}
+        <Reveal delay={0.05}>
+          <div
+            data-testid="home-promo-novembre"
+            className="mt-9 flex flex-col gap-6 rounded-[2rem] border border-rosa/30 bg-gradient-to-br from-rosa-soft to-crema p-8 shadow-md sm:p-10 lg:flex-row lg:items-center lg:justify-between"
+          >
+            <div className="max-w-xl">
+              <span className="rounded-full bg-rosa px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-carta">{c.promo.badge}</span>
+              <h3 className="mt-4 font-serif text-3xl font-semibold text-antracite sm:text-4xl">{c.promo.title}</h3>
+              <p className="mt-3 leading-relaxed text-antracite/75">{c.promo.text}</p>
+              <p className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="font-serif text-3xl font-bold text-rosa">{c.promo.priceUnit}</span>
+                <span className="text-[15px] font-medium text-antracite/70">{c.promo.priceNote}</span>
+              </p>
+              <p className="mt-1 text-lg font-semibold text-antracite">
+                {c.promo.priceTotal} <s className="ml-1 text-base font-normal text-muted-foreground">{c.promo.priceOld}</s>
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
+              <FreshaButton label={c.promo.ctaFresha} kind="promo" testid="promo-fresha-btn" className="btn-primary" />
+              {settings.whatsapp_number && (
+                <a
+                  data-testid="promo-whatsapp-btn"
+                  href={waLink(settings.whatsapp_number, c.promo.waMsg)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary"
+                >
+                  {c.promo.ctaWa}
+                </a>
+              )}
+            </div>
+          </div>
+        </Reveal>
+
+        {evidenza.length > 0 && (
+          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:max-w-3xl">
             {evidenza.map((p, i) => (
               <Reveal key={p.handle} delay={i * 0.1}>
                 <PercorsoCard percorso={p} areaNome={areaNome(p.area)} />
               </Reveal>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* SPECIALISTA DEL CORPO - bento */}
       <section className="bg-antracite py-20 text-carta lg:py-28">

@@ -71,6 +71,18 @@ export const en = {
       cta: "Confirm your attendance",
     },
     evidenza: { eyebrow: "In the spotlight this month", title: "The programmes of the moment" },
+    promo: {
+      badge: "Promo · November",
+      title: "Pressotherapy",
+      text: "November only: promo package of 10 pressotherapy sessions, for light legs and deep drainage.",
+      priceUnit: "CHF 50",
+      priceNote: "per session instead of CHF 60",
+      priceTotal: "10 sessions: CHF 500",
+      priceOld: "instead of CHF 600",
+      ctaFresha: "Book on Fresha",
+      ctaWa: "Message us on WhatsApp",
+      waMsg: "Hello, I would like to book the November promo: 10 pressotherapy sessions at CHF 50 each.",
+    },
     corpo: {
       eyebrow: "The specialisation",
       h2: "The body is my specialisation",

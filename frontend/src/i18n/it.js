@@ -71,6 +71,18 @@ export const it = {
       cta: "Conferma la tua presenza",
     },
     evidenza: { eyebrow: "In evidenza questo mese", title: "I percorsi del momento" },
+    promo: {
+      badge: "Promo · Novembre",
+      title: "Pressoterapia",
+      text: "Solo per il mese di novembre: pacchetto promo di 10 sedute di pressoterapia, per gambe leggere e un drenaggio profondo.",
+      priceUnit: "CHF 50",
+      priceNote: "a seduta invece di CHF 60",
+      priceTotal: "10 sedute: CHF 500",
+      priceOld: "invece di CHF 600",
+      ctaFresha: "Prenota su Fresha",
+      ctaWa: "Scrivici su WhatsApp",
+      waMsg: "Ciao, vorrei prenotare la promo di novembre: 10 sedute di pressoterapia a CHF 50 cadauna.",
+    },
     corpo: {
       eyebrow: "La specializzazione",
       h2: "Il corpo è la mia specializzazione",

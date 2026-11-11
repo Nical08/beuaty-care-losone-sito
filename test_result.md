@@ -1,3 +1,7 @@
+# Test Result - Promo Novembre Pressoterapia: IMPLEMENTATA ✅
+## Home "In evidenza questo mese": aggiunta card promo (data-testid="home-promo-novembre") in 4 lingue (it/en/fr/de) — Pressoterapia CHF 50/seduta (invece di 60), pacchetto 10 sedute CHF 500 (invece di 600). CTA: Fresha (promo-fresha-btn) + WhatsApp con messaggio precompilato (promo-whatsapp-btn). Verifica screenshot OK in EN e DE. Da ripubblicare in produzione per renderla visibile su esteticabeautycare.com.
+
+
 # Test Result - Multilingua EN/FR/DE: COMPLETATO ✅
 ## Test frontend completo PASS: 4 lingue, selettore desktop+mobile, persistenza localStorage, tutte le pagine pubbliche tradotte (corpo/viso/percorsi/dettaglio/servizi/susana/contatti/buoni/faq/privacy/link), quiz in EN/FR, ricerca servizi, prezzi CHF invariati, admin in italiano, zero errori console e zero richieste /undefined/. Pronto per la pubblicazione.
 

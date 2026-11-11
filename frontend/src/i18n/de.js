@@ -71,6 +71,18 @@ export const de = {
       cta: "Bestätige deine Teilnahme",
     },
     evidenza: { eyebrow: "Im Fokus diesen Monat", title: "Die Programme des Augenblicks" },
+    promo: {
+      badge: "Promo · November",
+      title: "Pressotherapie",
+      text: "Nur im November: Promo-Paket mit 10 Pressotherapie-Sitzungen für leichte Beine und tiefe Drainage.",
+      priceUnit: "CHF 50",
+      priceNote: "pro Sitzung statt CHF 60",
+      priceTotal: "10 Sitzungen: CHF 500",
+      priceOld: "statt CHF 600",
+      ctaFresha: "Auf Fresha buchen",
+      ctaWa: "Schreib uns auf WhatsApp",
+      waMsg: "Guten Tag, ich möchte die November-Promo buchen: 10 Pressotherapie-Sitzungen à CHF 50.",
+    },
     corpo: {
       eyebrow: "Die Spezialisierung",
       h2: "Der Körper ist meine Spezialisierung",
