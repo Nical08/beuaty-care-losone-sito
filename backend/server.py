@@ -44,7 +44,80 @@ DEFAULT_SETTINGS = {
     "fresha_buoni_url": "",
     "telefono": "+41 79 649 40 05",
     "email": "esteticabeautycare@hotmail.ch",
+    "promo_attiva": True,
+    "promo_scadenza": "2026-11-30T22:59:59.000Z",
+    "promo_testi": {
+        "it": {
+            "badge": "Promo · Novembre",
+            "title": "Pressoterapia",
+            "text": "Solo per il mese di novembre: pacchetto promo di 10 sedute di pressoterapia, per gambe leggere e un drenaggio profondo.",
+            "priceUnit": "CHF 50",
+            "priceNote": "a seduta invece di CHF 60",
+            "priceTotal": "10 sedute: CHF 500",
+            "priceOld": "invece di CHF 600",
+            "ctaFresha": "Prenota su Fresha",
+            "ctaWa": "Scrivici su WhatsApp",
+            "waMsg": "Ciao, vorrei prenotare la promo di novembre: 10 sedute di pressoterapia a CHF 50 cadauna.",
+        },
+        "en": {
+            "badge": "Promo · November",
+            "title": "Pressotherapy",
+            "text": "November only: promo package of 10 pressotherapy sessions, for light legs and deep drainage.",
+            "priceUnit": "CHF 50",
+            "priceNote": "per session instead of CHF 60",
+            "priceTotal": "10 sessions: CHF 500",
+            "priceOld": "instead of CHF 600",
+            "ctaFresha": "Book on Fresha",
+            "ctaWa": "Message us on WhatsApp",
+            "waMsg": "Hello, I would like to book the November promo: 10 pressotherapy sessions at CHF 50 each.",
+        },
+        "fr": {
+            "badge": "Promo · Novembre",
+            "title": "Pressothérapie",
+            "text": "Uniquement en novembre : forfait promo de 10 séances de pressothérapie, pour des jambes légères et un drainage profond.",
+            "priceUnit": "CHF 50",
+            "priceNote": "la séance au lieu de CHF 60",
+            "priceTotal": "10 séances : CHF 500",
+            "priceOld": "au lieu de CHF 600",
+            "ctaFresha": "Réserver sur Fresha",
+            "ctaWa": "Écrivez-nous sur WhatsApp",
+            "waMsg": "Bonjour, je souhaiterais réserver la promo de novembre : 10 séances de pressothérapie à CHF 50 chacune.",
+        },
+        "de": {
+            "badge": "Promo · November",
+            "title": "Pressotherapie",
+            "text": "Nur im November: Promo-Paket mit 10 Pressotherapie-Sitzungen für leichte Beine und tiefe Drainage.",
+            "priceUnit": "CHF 50",
+            "priceNote": "pro Sitzung statt CHF 60",
+            "priceTotal": "10 Sitzungen: CHF 500",
+            "priceOld": "statt CHF 600",
+            "ctaFresha": "Auf Fresha buchen",
+            "ctaWa": "Schreib uns auf WhatsApp",
+            "waMsg": "Guten Tag, ich möchte die November-Promo buchen: 10 Pressotherapie-Sitzungen à CHF 50.",
+        },
+    },
 }
+
+PROMO_LANGS = {"it", "en", "fr", "de"}
+PROMO_FIELDS = set(DEFAULT_SETTINGS["promo_testi"]["it"].keys())
+
+
+def validate_promo(allowed: dict):
+    if "promo_scadenza" in allowed:
+        try:
+            datetime.fromisoformat(str(allowed["promo_scadenza"]).replace("Z", "+00:00"))
+        except ValueError:
+            raise HTTPException(status_code=422, detail="Data di scadenza non valida")
+    if "promo_testi" in allowed:
+        testi = allowed["promo_testi"]
+        if not isinstance(testi, dict) or not isinstance(testi.get("it"), dict):
+            raise HTTPException(status_code=422, detail="Testi promo non validi")
+        allowed["promo_testi"] = {
+            lang: {k: str(v)[:500] for k, v in (fields or {}).items() if k in PROMO_FIELDS}
+            for lang, fields in testi.items() if lang in PROMO_LANGS and isinstance(fields, dict)
+        }
+        if not allowed["promo_testi"]["it"].get("title", "").strip():
+            raise HTTPException(status_code=422, detail="Il titolo in italiano è obbligatorio")
 
 # ---------- Auth ----------
 
@@ -110,6 +183,7 @@ async def update_settings(request: Request, admin=Depends(require_admin)):
     allowed = {k: v for k, v in body.items() if k in DEFAULT_SETTINGS}
     if not allowed:
         raise HTTPException(status_code=400, detail="Nessuna impostazione valida")
+    validate_promo(allowed)
     await db.settings.update_one({"_id": "site"}, {"$set": allowed}, upsert=True)
     return await get_settings()
 

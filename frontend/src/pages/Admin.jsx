@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Download, LogOut } from "lucide-react";
 import { adminLogin, adminGetLeads, adminUpdateSettings, adminGetStats, api } from "@/lib/api";
 import { useSite } from "@/lib/siteContext";
+import PromoEditor from "@/components/PromoEditor";
 
 const FLAGS = [
   ["shop_prodotti_attivo", "Shop prodotti"],
@@ -171,6 +172,8 @@ const Admin = () => {
           ))}
         </div>
       </div>
+
+      <PromoEditor token={token} />
 
       <div className="mt-6 flex items-center gap-3">
         <label className="text-sm font-semibold text-antracite">Filtra per percorso:</label>
