@@ -142,7 +142,8 @@ const Home = () => {
         </Reveal>
 
         {/* PROMO DEL MESE */}
-        <PromoCard />
+        <PromoCard suffix="-2" promo={{ attiva: settings.promo2_attiva, scadenza: settings.promo2_scadenza, testi: settings.promo2_testi }} />
+        <PromoCard promo={{ attiva: settings.promo_attiva, scadenza: settings.promo_scadenza, testi: settings.promo_testi }} />
 
         {evidenza.length > 0 && (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:max-w-3xl">

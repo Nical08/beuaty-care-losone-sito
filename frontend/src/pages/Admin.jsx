@@ -3,6 +3,7 @@ import { Download, LogOut } from "lucide-react";
 import { adminLogin, adminGetLeads, adminUpdateSettings, adminGetStats, api } from "@/lib/api";
 import { useSite } from "@/lib/siteContext";
 import PromoEditor from "@/components/PromoEditor";
+import EventoImmagineEditor from "@/components/EventoImmagineEditor";
 
 const FLAGS = [
   ["shop_prodotti_attivo", "Shop prodotti"],
@@ -174,6 +175,8 @@ const Admin = () => {
       </div>
 
       <PromoEditor token={token} />
+      <PromoEditor token={token} prefix="promo2" title="Seconda promo (Home)" />
+      <EventoImmagineEditor token={token} />
 
       <div className="mt-6 flex items-center gap-3">
         <label className="text-sm font-semibold text-antracite">Filtra per percorso:</label>

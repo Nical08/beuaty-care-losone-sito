@@ -4,6 +4,8 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const api = axios.create({ baseURL: API });
 
+export const fileUrl = (path) => `${API}/files/${path}`;
+
 export const getSettings = () => api.get("/settings").then((r) => r.data);
 export const getPercorsi = () => api.get("/percorsi").then((r) => r.data);
 export const getPercorso = (handle) => api.get(`/percorsi/${handle}`).then((r) => r.data);

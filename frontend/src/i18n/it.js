@@ -285,6 +285,11 @@ export const it = {
     orariTitle: "Orari",
     mapTitle: "Mappa: Estetica Beauty & Care, Via Locarno 58, Losone",
   },
+  notFound: {
+    title: "Pagina non trovata",
+    text: "La pagina che cerchi non esiste o è stata spostata.",
+    btn: "Torna alla home",
+  },
   buoni: {
     eyebrow: "Buoni regalo",
     h1: "Regala un momento per sé",
@@ -294,6 +299,9 @@ export const it = {
     idee: ["Pausa benessere", "Rituale Metodo Rosa", "Un valore a scelta"],
     buyBtn: "Acquista il buono regalo",
     note: "Disponibile anche in busta regalo presso il centro, con un campioncino della linea alla rosa damascena.",
+    ritiroEvento: "Puoi anche ritirarli di persona durante il Christmas Gift Experience del 27 novembre al Golf Ascona.",
+    waBtn: "Richiedi il buono su WhatsApp",
+    waMsg: "Ciao, vorrei un buono regalo",
   },
   evento: {
     eyebrow: "Beauty & Care · Losone",
@@ -305,6 +313,7 @@ export const it = {
     benefit1b: " per tutte le ospiti",
     benefit2a: "Omaggio speciale",
     benefit2b: " per tutte le partecipanti",
+    ritiro: "Durante l'evento potrai ritirare i buoni regalo da usare sui tuoi trattamenti.",
     form: {
       h2: "Conferma la tua presenza",
       p: "Riceverai in anteprima il nostro menù di Natale, con proposte esclusive a prezzi speciali. Segna la data in agenda, iscriviti e porta con te un'amica: sarete le benvenute!",

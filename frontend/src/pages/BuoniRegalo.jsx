@@ -2,9 +2,12 @@ import Reveal from "@/components/Reveal";
 import FreshaButton from "@/components/FreshaButton";
 import { useLang } from "@/lib/langContext";
 import { Gift } from "lucide-react";
+import { useSite } from "@/lib/siteContext";
+import { waLink } from "@/components/WhatsAppFab";
 
 const BuoniRegalo = () => {
   const { t } = useLang();
+  const { settings } = useSite();
   const c = t.buoni;
 
   return (
@@ -37,11 +40,20 @@ const BuoniRegalo = () => {
             {c.idee.map((i) => <li key={i}>· {i}</li>)}
           </ul>
           <div className="mt-7">
-            <FreshaButton label={c.buyBtn} kind="buoni" testid="buoni-fresha-btn" className="btn-primary" />
+            {settings.fresha_buoni_url ? (
+              <FreshaButton label={c.buyBtn} kind="buoni" testid="buoni-fresha-btn" className="btn-primary" />
+            ) : (
+              <a data-testid="buoni-whatsapp-btn" href={waLink(settings.whatsapp_number, c.waMsg)} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                {c.waBtn}
+              </a>
+            )}
           </div>
           <p className="mt-5 text-sm text-muted-foreground">
             {c.note}
           </p>
+          {settings.open_day_attivo && (
+            <p data-testid="buoni-ritiro-evento" className="mt-2 text-sm text-muted-foreground">{c.ritiroEvento}</p>
+          )}
         </div>
       </Reveal>
     </div>

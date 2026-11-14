@@ -285,6 +285,11 @@ export const fr = {
     orariTitle: "Horaires",
     mapTitle: "Carte : Estetica Beauty & Care, Via Locarno 58, Losone",
   },
+  notFound: {
+    title: "Page introuvable",
+    text: "La page que vous cherchez n'existe pas ou a été déplacée.",
+    btn: "Retour à l'accueil",
+  },
   buoni: {
     eyebrow: "Bons cadeaux",
     h1: "Offrez un moment pour soi",
@@ -294,6 +299,9 @@ export const fr = {
     idee: ["Pause bien-être", "Rituel Méthode Rosa", "Une valeur au choix"],
     buyBtn: "Acheter le bon cadeau",
     note: "Disponible aussi en pochette cadeau au centre, avec un échantillon de la ligne à la rose de Damas.",
+    ritiroEvento: "Vous pouvez aussi les retirer sur place lors du Christmas Gift Experience du 27 novembre au Golf Ascona.",
+    waBtn: "Demander un bon sur WhatsApp",
+    waMsg: "Bonjour, je souhaiterais un bon cadeau",
   },
   evento: {
     eyebrow: "Beauty & Care · Losone",
@@ -305,6 +313,7 @@ export const fr = {
     benefit1b: " à toutes les invitées",
     benefit2a: "Cadeau spécial",
     benefit2b: " pour toutes les participantes",
+    ritiro: "Pendant l'événement, vous pourrez retirer vos bons cadeaux à utiliser sur vos soins.",
     form: {
       h2: "Confirmez votre présence",
       p: "Vous recevrez en avant-première notre menu de Noël, avec des propositions exclusives à prix spéciaux. Notez la date, inscrivez-vous et amenez une amie : vous serez les bienvenues !",

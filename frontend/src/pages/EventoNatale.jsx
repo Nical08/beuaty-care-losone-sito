@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, Clock, MapPin, Sparkles, Gift, GlassWater, CheckCircle2 } from "lucide-react";
 import Reveal from "@/components/Reveal";
-import { api } from "@/lib/api";
+import { api, fileUrl } from "@/lib/api";
 import { useSite } from "@/lib/siteContext";
 import { useLang, fmt } from "@/lib/langContext";
 import { waLink } from "@/components/WhatsAppFab";
@@ -48,6 +48,17 @@ const EventoNatale = () => {
     <div data-testid="evento-natale-page" className="grain relative overflow-hidden" style={{ background: "linear-gradient(180deg, #C4E5DD 0%, #DFF0EA 55%, #FAF7F2 100%)" }}>
       <section className="container-site py-16 lg:py-24">
         <div className="mx-auto max-w-3xl text-center">
+          {settings.immagine_evento && (
+            <motion.img
+              data-testid="evento-immagine"
+              src={fileUrl(settings.immagine_evento)}
+              alt={`${c.title1} ${c.title2}`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="mx-auto mb-10 max-h-[420px] w-full rounded-[2rem] object-cover shadow-lg"
+            />
+          )}
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#3f5c57]">{c.eyebrow}</p>
             <h1 className="mt-5 font-serif text-4xl font-semibold leading-tight text-[#22312e] sm:text-5xl lg:text-6xl">
@@ -79,6 +90,10 @@ const EventoNatale = () => {
                 <Gift size={22} className="shrink-0 text-[#3f5c57]" />
                 <p className="text-[15px] font-medium text-[#22312e]"><strong>{c.benefit2a}</strong>{c.benefit2b}</p>
               </div>
+            </div>
+            <div data-testid="evento-ritiro-buoni" className="mx-auto mt-3 flex max-w-xl items-center gap-3 rounded-3xl border border-[#2f4f4a]/15 bg-white/70 p-5 text-left">
+              <Gift size={22} className="shrink-0 text-[#3f5c57]" />
+              <p className="text-[15px] font-medium text-[#22312e]">{c.ritiro}</p>
             </div>
           </Reveal>
 

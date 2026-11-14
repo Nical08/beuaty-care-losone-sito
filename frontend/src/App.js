@@ -23,12 +23,24 @@ import Admin from "@/pages/Admin";
 import EventoNatale from "@/pages/EventoNatale";
 import Faq from "@/pages/Faq";
 import ComingSoon from "@/pages/ComingSoon";
+import NotFound from "@/pages/NotFound";
+
+const SITE_URL = "https://esteticabeautycare.com";
+
+const setHeadLink = (selector, create, attr, value) => {
+  let el = document.head.querySelector(selector);
+  if (!el) { el = create(); document.head.appendChild(el); }
+  el.setAttribute(attr, value);
+};
 
 const ScrollManager = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
     trackEvent("pageview", pathname);
+    const url = `${SITE_URL}${pathname === "/" ? "/" : pathname.replace(/\/$/, "")}`;
+    setHeadLink('link[rel="canonical"]', () => Object.assign(document.createElement("link"), { rel: "canonical" }), "href", url);
+    setHeadLink('meta[property="og:url"]', () => { const m = document.createElement("meta"); m.setAttribute("property", "og:url"); return m; }, "content", url);
   }, [pathname]);
   return null;
 };
@@ -70,6 +82,7 @@ function App() {
               <Route path="/cookie" element={<Legale tipo="cookie" />} />
               <Route path="/note-legali" element={<Legale tipo="note-legali" />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="/link" element={<LinkBio />} />
           </Routes>

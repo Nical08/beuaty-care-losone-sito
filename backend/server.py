@@ -12,8 +12,11 @@ from typing import Optional, List
 from zoneinfo import ZoneInfo
 
 import jwt
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends
-from fastapi.responses import StreamingResponse
+import uuid
+import asyncio
+import requests
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Depends, UploadFile, File
+from fastapi.responses import StreamingResponse, Response
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
@@ -97,6 +100,59 @@ DEFAULT_SETTINGS = {
             "waMsg": "Guten Tag, ich möchte die November-Promo buchen: 10 Pressotherapie-Sitzungen à CHF 50.",
         },
     },
+    "promo2_attiva": True,
+    "promo2_scadenza": "2026-11-30T22:59:59.000Z",
+    "promo2_testi": {
+        "it": {
+            "badge": "Promo · Novembre",
+            "title": "Epilazione laser −70%",
+            "text": "Per tutto il mese di novembre: −70% sulla prima seduta di epilazione laser su zona piccola. Su prenotazione, fino a disponibilità, non cumulabile con altre promozioni.",
+            "priceUnit": "−70%",
+            "priceNote": "sulla prima seduta · zona piccola",
+            "priceTotal": "",
+            "priceOld": "",
+            "ctaFresha": "Prenota su Fresha",
+            "ctaWa": "Scrivici su WhatsApp",
+            "waMsg": "Ciao, vorrei approfittare del −70% sulla prima seduta di epilazione laser zona piccola di novembre.",
+        },
+        "en": {
+            "badge": "Promo · November",
+            "title": "Laser hair removal −70%",
+            "text": "All November long: −70% on your first laser hair removal session on a small area. By appointment, subject to availability, not combinable with other promotions.",
+            "priceUnit": "−70%",
+            "priceNote": "on your first session · small area",
+            "priceTotal": "",
+            "priceOld": "",
+            "ctaFresha": "Book on Fresha",
+            "ctaWa": "Message us on WhatsApp",
+            "waMsg": "Hello, I would like to get the −70% offer on my first laser hair removal session on a small area in November.",
+        },
+        "fr": {
+            "badge": "Promo · Novembre",
+            "title": "Épilation laser −70 %",
+            "text": "Tout le mois de novembre : −70 % sur la première séance d'épilation laser sur une petite zone. Sur rendez-vous, dans la limite des disponibilités, non cumulable avec d'autres promotions.",
+            "priceUnit": "−70 %",
+            "priceNote": "sur la première séance · petite zone",
+            "priceTotal": "",
+            "priceOld": "",
+            "ctaFresha": "Réserver sur Fresha",
+            "ctaWa": "Écrivez-nous sur WhatsApp",
+            "waMsg": "Bonjour, je souhaiterais profiter de l'offre −70 % sur ma première séance d'épilation laser sur une petite zone en novembre.",
+        },
+        "de": {
+            "badge": "Promo · November",
+            "title": "Laser-Haarentfernung −70 %",
+            "text": "Den ganzen November: −70 % auf die erste Laser-Haarentfernungs-Sitzung einer kleinen Zone. Nur mit Termin, solange verfügbar, nicht mit anderen Aktionen kombinierbar.",
+            "priceUnit": "−70 %",
+            "priceNote": "auf die erste Sitzung · kleine Zone",
+            "priceTotal": "",
+            "priceOld": "",
+            "ctaFresha": "Auf Fresha buchen",
+            "ctaWa": "Schreib uns auf WhatsApp",
+            "waMsg": "Guten Tag, ich möchte im November das −70 %-Angebot für die erste Laser-Haarentfernungs-Sitzung einer kleinen Zone nutzen.",
+        },
+    },
+    "immagine_evento": "",
 }
 
 PROMO_LANGS = {"it", "en", "fr", "de"}
@@ -107,23 +163,30 @@ def validate_promo(allowed: dict):
     for k, v in allowed.items():
         if isinstance(DEFAULT_SETTINGS[k], bool) and not isinstance(v, bool):
             raise HTTPException(status_code=422, detail=f"Valore non valido per {k}")
-    if "promo_scadenza" in allowed:
+    if allowed.get("immagine_evento", "") != "":
+        allowed.pop("immagine_evento")
+    for prefix in ("promo", "promo2"):
+        validate_promo_block(allowed, prefix)
+
+
+def validate_promo_block(allowed: dict, prefix: str):
+    if f"{prefix}_scadenza" in allowed:
         try:
-            dt = datetime.fromisoformat(str(allowed["promo_scadenza"]).replace("Z", "+00:00"))
+            dt = datetime.fromisoformat(str(allowed[f"{prefix}_scadenza"]).replace("Z", "+00:00"))
         except ValueError:
             raise HTTPException(status_code=422, detail="Data di scadenza non valida")
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=ZoneInfo("Europe/Zurich"))
-        allowed["promo_scadenza"] = dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    if "promo_testi" in allowed:
-        testi = allowed["promo_testi"]
+        allowed[f"{prefix}_scadenza"] = dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    if f"{prefix}_testi" in allowed:
+        testi = allowed[f"{prefix}_testi"]
         if not isinstance(testi, dict) or not isinstance(testi.get("it"), dict):
             raise HTTPException(status_code=422, detail="Testi promo non validi")
-        allowed["promo_testi"] = {
+        allowed[f"{prefix}_testi"] = {
             lang: {k: ("" if v is None else str(v))[:500] for k, v in (fields or {}).items() if k in PROMO_FIELDS}
             for lang, fields in testi.items() if lang in PROMO_LANGS and isinstance(fields, dict)
         }
-        if not allowed["promo_testi"]["it"].get("title", "").strip():
+        if not allowed[f"{prefix}_testi"]["it"].get("title", "").strip():
             raise HTTPException(status_code=422, detail="Il titolo in italiano è obbligatorio")
 
 # ---------- Auth ----------
@@ -180,7 +243,7 @@ async def login(input: LoginInput, request: Request):
 @api_router.get("/settings")
 async def get_settings():
     doc = await db.settings.find_one({"_id": "site"}) or {}
-    settings = {**DEFAULT_SETTINGS, **{k: v for k, v in doc.items() if k != "_id"}}
+    settings = {**DEFAULT_SETTINGS, **{k: v for k, v in doc.items() if k in DEFAULT_SETTINGS}}
     return settings
 
 
@@ -193,6 +256,74 @@ async def update_settings(request: Request, admin=Depends(require_admin)):
     validate_promo(allowed)
     await db.settings.update_one({"_id": "site"}, {"$set": allowed}, upsert=True)
     return await get_settings()
+
+
+# ---------- Immagine evento (Emergent Object Storage) ----------
+
+STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
+STORAGE_URL = STORAGE_BASE.rstrip("/") + "/objstore/api/v1/storage"
+APP_NAME = "beautycare-losone"
+IMAGE_TYPES = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+MAX_IMAGE_BYTES = 8 * 1024 * 1024
+storage_key = None
+
+
+def init_storage(force: bool = False):
+    global storage_key
+    if storage_key and not force:
+        return storage_key
+    resp = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": os.environ["EMERGENT_LLM_KEY"]}, timeout=30)
+    resp.raise_for_status()
+    storage_key = resp.json()["storage_key"]
+    return storage_key
+
+
+def storage_request(method: str, path: str, **kwargs):
+    for attempt in range(2):
+        key = init_storage(force=attempt == 1)
+        headers = {"X-Storage-Key": key, **kwargs.pop("headers", {})}
+        resp = requests.request(method, f"{STORAGE_URL}/objects/{path}", headers=headers, timeout=120, **kwargs)
+        if resp.status_code != 404 or attempt == 1:
+            resp.raise_for_status()
+            return resp
+        kwargs["headers"] = {k: v for k, v in headers.items() if k != "X-Storage-Key"}
+
+
+@api_router.post("/admin/immagine-evento")
+async def upload_immagine_evento(file: UploadFile = File(...), admin=Depends(require_admin)):
+    ext = IMAGE_TYPES.get(file.content_type or "")
+    if not ext:
+        raise HTTPException(status_code=422, detail="Formato non supportato: usa JPG, PNG o WEBP")
+    data = await file.read()
+    if len(data) > MAX_IMAGE_BYTES:
+        raise HTTPException(status_code=422, detail="Immagine troppo grande (max 8 MB)")
+    path = f"{APP_NAME}/evento/{uuid.uuid4()}.{ext}"
+    resp = await asyncio.to_thread(storage_request, "PUT", path, data=data, headers={"Content-Type": file.content_type})
+    stored = resp.json()["path"]
+    await db.files.update_many({"categoria": "evento", "is_deleted": False}, {"$set": {"is_deleted": True}})
+    await db.files.insert_one({
+        "storage_path": stored, "categoria": "evento", "original_filename": file.filename,
+        "content_type": file.content_type, "size": len(data), "is_deleted": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+    await db.settings.update_one({"_id": "site"}, {"$set": {"immagine_evento": stored}}, upsert=True)
+    return await get_settings()
+
+
+@api_router.delete("/admin/immagine-evento")
+async def delete_immagine_evento(admin=Depends(require_admin)):
+    await db.files.update_many({"categoria": "evento", "is_deleted": False}, {"$set": {"is_deleted": True}})
+    await db.settings.update_one({"_id": "site"}, {"$set": {"immagine_evento": ""}}, upsert=True)
+    return await get_settings()
+
+
+@api_router.get("/files/{path:path}")
+async def get_file(path: str):
+    record = await db.files.find_one({"storage_path": path, "is_deleted": False})
+    if not record:
+        raise HTTPException(status_code=404, detail="File non trovato")
+    resp = await asyncio.to_thread(storage_request, "GET", path)
+    return Response(content=resp.content, media_type=record["content_type"], headers={"Cache-Control": "public, max-age=86400"})
 
 
 # ---------- Percorsi (catalogo locale, in attesa di Shopify) ----------
@@ -379,6 +510,11 @@ async def startup():
     existing = await db.settings.find_one({"_id": "site"})
     if not existing:
         await db.settings.insert_one({"_id": "site", **DEFAULT_SETTINGS})
+    await db.settings.update_one({"_id": "site", "mig_evento_2026": {"$exists": False}}, {"$set": {"open_day_attivo": True, "mig_evento_2026": True}})
+    try:
+        await asyncio.to_thread(init_storage)
+    except Exception as e:
+        logger.error(f"Storage init failed: {e}")
     await db.settings.update_one({"_id": "site", "whatsapp_number": "417964944005"}, {"$set": {"whatsapp_number": "41796494005"}})
 
 
