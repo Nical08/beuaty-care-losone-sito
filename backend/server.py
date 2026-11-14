@@ -250,10 +250,12 @@ async def get_settings():
 @api_router.put("/settings")
 async def update_settings(request: Request, admin=Depends(require_admin)):
     body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="Nessuna impostazione valida")
     allowed = {k: v for k, v in body.items() if k in DEFAULT_SETTINGS}
+    validate_promo(allowed)
     if not allowed:
         raise HTTPException(status_code=400, detail="Nessuna impostazione valida")
-    validate_promo(allowed)
     await db.settings.update_one({"_id": "site"}, {"$set": allowed}, upsert=True)
     return await get_settings()
 

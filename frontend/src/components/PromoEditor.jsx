@@ -18,9 +18,10 @@ const FIELDS = [
 
 const toLocalInput = (iso) => {
   if (!iso) return "";
-  const d = new Date(iso);
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Zurich", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  }).formatToParts(new Date(iso)).map((p) => [p.type, p.value]));
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 };
 
 export const PromoEditor = ({ token, prefix = "promo", title = "Promo del mese (Home)" }) => {
@@ -48,7 +49,7 @@ export const PromoEditor = ({ token, prefix = "promo", title = "Promo del mese (
     try {
       const updated = await adminUpdateSettings(token, {
         [`${prefix}_attiva`]: attiva,
-        [`${prefix}_scadenza`]: new Date(scadenza).toISOString(),
+        [`${prefix}_scadenza`]: `${scadenza}:59`,
         [`${prefix}_testi`]: testi,
       });
       setSettings(updated);

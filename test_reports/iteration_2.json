@@ -1,0 +1,34 @@
+{
+  "summary": "Iteration 2: tested two Home promos (laser promo2 above pressoterapia, 4 langs, countdowns, no priceTotal/priceOld for promo2), Home event banner, admin promo2 editor (toggle hides only home-promo-2), admin event image upload/preview/remove + /evento-natale image, evento ritiro row in 4 langs, RSVP UI submit -> shows in admin table, /buoni-regalo WhatsApp button + ritiro line toggled by open_day_attivo, 404 page, canonical/og:url updates, robots/sitemap, quiz auto-open rules, backend promo2 validation/upload/files. All requested features work. Backend 15/15 pytest passed. Only minor issues found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/settings", "issue": "A body that is not a JSON object (e.g. [1]) returns 500 because body.items() fails. Should return 400/422."},
+      {"endpoint": "PUT /api/settings", "issue": "A body of only {immagine_evento:'x'} has its value stripped and then runs $set {} -> returns 200 with nothing changed. It should probably return 400 'Nessuna impostazione valida'. Harmless."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "PromoEditor (admin-promo2-scadenza / admin-promo-scadenza)", "issue": "The datetime-local input only goes to the minute, so saving from the admin turns 2026-11-30T22:59:59Z into 22:59:00Z (the promo ends 59s early). Also toLocalInput uses the browser's timezone, so the 'ora svizzera' label is only true for browsers set to Swiss time (a UTC browser shows 22:59, not 23:59). Fix: add step=1 or append :59, and convert with Europe/Zurich instead of the browser's local time.", "selector": "[data-testid=admin-promo2-scadenza]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_promo2_evento.py", "/app/backend/tests/test_promo_settings.py", "/app/test_reports/pytest/pytest_results_iter2.xml"],
+  "action_items": [
+    "(Low) PromoEditor: keep seconds / use Europe/Zurich for the datetime-local conversion so saving does not change 23:59:59 to 23:59:00",
+    "(Low) PUT /api/settings: return 400 when the body is not an object instead of 500",
+    "(Optional) robots.txt only disallows /admin. If you also want /link, /grazie and /risultato kept out of search results, add Disallow lines or noindex (they are already left out of sitemap.xml)"
+  ],
+  "critical_code_review_comments": [
+    "Admin flag checkboxes (admin-flag-*) are controlled by the async API result, with no optimistic update and no error handling. If the toggle API fails, the promise rejection is not caught.",
+    "EventoImmagineEditor.remove has no try/catch, so a failed delete fails silently.",
+    "Quiz: if the popup auto-opens on / and the user then goes to /evento-natale, it stays open. That is acceptable, since it was opened on home."
+  ],
+  "updated_files": ["/app/backend/tests/test_promo2_evento.py"],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% of requested flows"},
+  "seed_data_creation": "Created RSVPs TEST_api_rsvp and TEST_UI_rsvp and deleted both by exact name. Uploaded og-image.jpg as the event image, then removed it (immagine_evento='').",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Final state restored and checked: promo_attiva true, promo2_attiva true, both scadenze 2026-11-30T22:59:59.000Z (promo2 re-set through the API after the admin UI save cut it to 22:59:00), open_day_attivo true, immagine_evento ''. Env clock is Nov 14 2026. Admin flag checkboxes need .click() + wait, because Playwright's check()/uncheck() fail when the state updates asynchronously. pytest.ini uses xdist, so do not pass -p no:xdist."
+}

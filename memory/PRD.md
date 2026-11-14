@@ -114,3 +114,12 @@
 ## 2026-06 — Promo laser novembre
 - "Laser senza pensieri" in evidenza al posto di "Mani e piedi in ordine"; slogan "Meno rasoio. Meno sforzo. Più tempo per te."; badge Promo novembre (campo promo); L1 seduta di prova CHF 24 (invece di 80, -70%), L2 6 sedute CHF 384 (invece di 480, -20%). Tradotto EN/FR/DE.
 - Da ripristinare a mano a fine promo (prezzi e badge in percorsi_data.py).
+
+## 2026-06 — Doppia promo, evento, SEO
+- promo2_* (laser −70%) + promo_* (pressoterapia) in Home (laser prima); PromoEditor riusabile (prefix); scadenze inserite in ora svizzera.
+- Immagine evento caricabile da admin (Emergent Object Storage, /api/admin/immagine-evento, /api/files/{path}); riga ritiro buoni in /evento-natale; /buoni-regalo con riga evento (se open_day_attivo) e pulsante WhatsApp se fresha_buoni_url vuoto.
+- open_day_attivo attivato con migrazione una-tantum (mig_evento_2026).
+- SEO: canonical/og:url dinamici su esteticabeautycare.com, og:image /assets/og-image.jpg, twitter card, JSON-LD BeautySalon, robots.txt, sitemap.xml, pagina 404 (route *), GENERATE_SOURCEMAP=false.
+- Quiz: auto-apertura solo in home dopo 15s o 40% scroll; ?quiz=1 forza.
+- Test: iteration_2 tutto OK (backend 15/15) + fix minori.
+- Backlog: Instagram URL per sameAs (mancante); 404 lato server resta 200 (SPA).
