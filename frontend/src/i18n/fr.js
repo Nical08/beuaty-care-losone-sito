@@ -50,6 +50,7 @@ export const fr = {
     condizioni: "Conditions de vente",
     noteLegali: "Mentions légales",
     rights: "© {{year}} Estetica Beauty & Care di Susana Cabezas Agostino · Via Locarno 58, 6616 Losone (TI) · TVA CHE-181.789.225",
+    managedBy: "Géré par",
   },
   home: {
     eyebrow: "Estetica Beauty & Care · Losone",
