@@ -64,7 +64,7 @@ const Footer = () => {
         </div>
         <p className="container-site mt-3 text-center text-xs text-muted-foreground">
           {t.footer.managedBy}{" "}
-          <a data-testid="footer-managed-by-link" href="https://www.webdevinnovations.ch" target="_blank" rel="noopener noreferrer" className="font-medium hover:text-rosa hover:underline underline-offset-4">webdevinnovations</a>
+          <a data-testid="footer-managed-by-link" href="https://www.webdevinnovations.ch" target="_blank" rel="noopener noreferrer" className="font-medium hover:text-rosa hover:underline underline-offset-4">WebDev Innovations</a>
         </p>
       </div>
     </footer>
