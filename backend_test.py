@@ -17,8 +17,8 @@ from pymongo import MongoClient
 BACKEND_URL = "http://localhost:8001/api"
 
 # Admin credentials from test_credentials.md
-ADMIN_EMAIL = "susana@beautycare-losone.ch"
-ADMIN_PASSWORD = "Estetica2026@"
+ADMIN_EMAIL = os.environ["ADMIN_EMAIL"]
+ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 # Expected database counts
 EXPECTED_COUNTS = {

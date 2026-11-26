@@ -29,7 +29,7 @@
 - Fase 1: layout, design, menu, footer, pulsante WhatsApp fisso, pulsante quiz sticky, pagine della mappa, interruttori (in Mongo, gestibili da /admin).
 - Fase 2: contenuti Homepage, /corpo, /viso, /susana, /percorsi (+dettaglio), /servizi, /buoni-regalo, /contatti, /link, /grazie, legali — con segnaposto [DA INSERIRE] dove manca materiale.
 - Fase 3: quiz completo (pop-up auto dopo 2,5s, ?quiz=1, logica A+B, testate 352 combinazioni), pagina /risultato dinamica, messaggio WhatsApp precompilato, salvataggio lead, /admin con filtri + export CSV + interruttori.
-- Admin: susana@beautycare-losone.ch / BeautyCare2026! (test, da cambiare).
+- Admin: credenziali in backend/.env (non nel repository).
 
 ## Implementato (28.10.2026)
 - Listino /servizi riscritto con 97 servizi reali estratti da Fresha (prezzi e durate), ogni riga con pulsante "Prenota su Fresha" collegato al listino prenotazioni del centro.
@@ -123,3 +123,7 @@
 - Quiz: auto-apertura solo in home dopo 15s o 40% scroll; ?quiz=1 forza.
 - Test: iteration_2 tutto OK (backend 15/15) + fix minori.
 - Backlog: Instagram URL per sameAs (mancante); 404 lato server resta 200 (SPA).
+
+## 2026-06 — Preparazione repository pubblico GitHub
+- Password tolte dai test (ora da env), PRD ripulito, scripts/db_export (dati personali) rimosso e ignorato (backup in /root/db_export_backup), README aggiunto. .env e test_credentials.md già esclusi.
+- ATTENZIONE: la cronologia git contiene ancora la password admin (3 commit) e db_export (1 commit). Fase 2: cambiare ADMIN_PASSWORD e JWT_SECRET.
